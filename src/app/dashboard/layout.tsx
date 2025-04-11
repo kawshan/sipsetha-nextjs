@@ -12,6 +12,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useTheme } from "next-themes"
+import FooterPage from "@/app/footer/page";
 
 
 
@@ -68,8 +69,15 @@ function Layout({children}  :any) {
                     </div>
 
 
+
                 </SidebarInset>
             </SidebarProvider>
+
+
+
+            <div>
+                <FooterPage />
+            </div>
         </div>
     );
 }
