@@ -51,8 +51,8 @@ function Page() {
                 </DialogTrigger>
                 <DialogContent className="w-full lg:max-w-screen-2xl sm:max-w-screen-2xl">
                     <DialogHeader>
-                        <DialogTitle>Add / Update Guardian</DialogTitle>
-                        <DialogDescription>
+                        <DialogTitle className="text-center">Add / Update Guardian</DialogTitle>
+                        <DialogDescription className="text-center">
                             Make Changes for Guardians
                         </DialogDescription>
                     </DialogHeader>
@@ -144,6 +144,25 @@ function Page() {
                             <Label className="text-lg font-bold">Note <span className="text-blue-800">(optional)</span> </Label>
                             <Input type="text" value={note} onChange={(e) => setGender(e.target.value)}></Input>
                         </div>
+
+                    </div>
+
+
+                    <div className="grid grid-cols-3 gap-4">
+
+                        <div>
+                            <Button variant="destructive">Reset</Button>
+                        </div>
+
+                        <div className="text-center">
+                            <Button variant="warning">Update</Button>
+                        </div>
+
+
+                        <div className="text-end">
+                            <Button variant="success">Save</Button>
+                        </div>
+
 
                     </div>
 
