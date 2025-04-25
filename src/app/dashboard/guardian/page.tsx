@@ -1,5 +1,5 @@
 "use client"
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Dialog,
     DialogContent,
@@ -12,6 +12,8 @@ import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import { Select,SelectContent,SelectGroup,SelectItem,SelectLabel,SelectTrigger,SelectValue,} from "@/components/ui/select"
+import {getGuardianTypeService} from "@/services/guardianTypeService";
+import {getAllGuardianService} from "@/services/guardianService";
 
 
 function Page() {
@@ -26,6 +28,16 @@ function Page() {
     const [guardiantype_id, setGuardianType] = useState(null)
     const [gender, setGender] = useState("")
     const [note, setNote] = useState("");
+    const [guardianTypeList, setGuardianTypeList] = useState([]);
+    const [guardianList,setGuardianList] = useState([]);
+
+
+    useEffect(()=>{
+        getGuardianTye();
+        getAllGuardianList();
+    },[])
+
+
 
 
     function handelGender (value:any):any{
@@ -34,9 +46,29 @@ function Page() {
     }
 
 
+    function getGuardianTye():any{
+        getGuardianTypeService().then((res:any)=>{
+            console.log(res.data);
+            setGuardianTypeList(res.data);
+        })
+    }
+
+
+    function handelGuardianType(value:any):any{
+        console.log(value);
+        setGuardianType(value);
+    }
+
+    function getAllGuardianList():any{
+        getAllGuardianService().then((res:any)=>{
+            console.log(res.data);
+            setGuardianList(res.data);
+        })
+    }
 
 
 
+    // @ts-ignore
     return (
         <div>
 
@@ -108,13 +140,16 @@ function Page() {
 
                         <div className="col-span-1">
                             <Label className="text-lg font-bold">Guardian Type</Label>
-                            <Select>
+                            <Select onValueChange={handelGuardianType}>
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select Guardian Type" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-
+                                            <SelectLabel>Guardian Types</SelectLabel>
+                                        {guardianTypeList.map((guardianType:any,index) =>(
+                                            <SelectItem value={guardianType} key={index}>{guardianType.name}</SelectItem>
+                                        ))}
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
