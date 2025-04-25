@@ -14,7 +14,8 @@ import {Label} from "@/components/ui/label";
 import { Select,SelectContent,SelectGroup,SelectItem,SelectLabel,SelectTrigger,SelectValue,} from "@/components/ui/select"
 import {getGuardianTypeService} from "@/services/guardianTypeService";
 import {getAllGuardianService} from "@/services/guardianService";
-
+import { Guardian, columns } from "@/app/dashboard/guardian/guardianColumns"
+import { DataTable } from "@/components/data-table"
 
 function Page() {
 
@@ -76,7 +77,7 @@ function Page() {
                 <div className="text-3xl p-5 font-bold">Guardian</div>
             </div>
 
-
+            <div>
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                     <Button variant="default" className="ms-3">Add/Update Guardian</Button>
@@ -207,6 +208,13 @@ function Page() {
 
                 </DialogContent>
             </Dialog>
+            </div>
+
+
+            <div className="mt-5">
+                <DataTable columns={columns} data={guardianList}/>
+            </div>
+
 
 
         </div>
