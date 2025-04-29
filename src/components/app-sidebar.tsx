@@ -35,9 +35,9 @@ const data = {
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: "Sipsetha Institute",
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      plan: "Education",
     },
     {
       name: "Acme Corp.",
@@ -52,14 +52,14 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "registration",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Guardian",
+          url: "/dashboard/guardian",
         },
         {
           title: "Starred",
