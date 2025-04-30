@@ -20,6 +20,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import {Shell, ShipWheel, Star} from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -85,7 +86,9 @@ export function DataTable<TData, TValue>({
 ) : (
         <TableRow>
             <TableCell colSpan={columns.length} className="h-24 text-center">
-        No results.
+                <div className="flex items-center justify-center">
+                    <ShipWheel className="animate-spin duration-1000 text-stone-600"/>
+                </div>
     </TableCell>
     </TableRow>
 )}
