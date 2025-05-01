@@ -87,7 +87,7 @@ export function DataTable<TData, TValue>({
         <TableRow>
             <TableCell colSpan={columns.length} className="h-24 text-center">
                 <div className="flex items-center justify-center">
-                    <ShipWheel className="animate-spin duration-1000 text-stone-600"/>
+                    <Shell className="animate-spin duration-1000 text-purple-500"/>
                 </div>
     </TableCell>
     </TableRow>

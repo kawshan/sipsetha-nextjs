@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select"
 import {getGuardianTypeService} from "@/services/guardianTypeService";
 import {getAllGuardianService, saveGuardianService} from "@/services/guardianService";
-import {Guardian, columns} from "@/app/dashboard/guardian/guardianColumns"
+import {Guardian, getGuardianColumns} from "@/app/dashboard/guardian/guardianColumns"
 import {DataTable} from "@/components/data-table"
 import {TextGenerateEffect} from "@/components/ui/text-generate-effect";
 import {Shell} from "lucide-react";
@@ -103,6 +103,15 @@ function Page() {
             alert("Something went wrong")
         })
     }
+
+
+    function refillGuardian (guardianObject:any):any{
+        setFirstName(guardianObject.firstname)
+    }
+
+
+
+
 
 
 
@@ -269,8 +278,8 @@ function Page() {
             </div>
 
 
-            <div className="mt-5">
-                    <DataTable columns={columns} data={guardianList}/>
+            <div className="mt-5 p-3">
+                    <DataTable columns={getGuardianColumns(refillGuardian)} data={guardianList}/>
             </div>
 
 
