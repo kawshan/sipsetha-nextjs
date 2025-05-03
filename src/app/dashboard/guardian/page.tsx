@@ -21,16 +21,23 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import {getGuardianTypeService} from "@/services/guardianTypeService";
-import {getAllGuardianService, saveGuardianService} from "@/services/guardianService";
+import {
+    deleteGuardianService,
+    getAllGuardianService,
+    saveGuardianService,
+    updateGuardianService
+} from "@/services/guardianService";
 import {Guardian, getGuardianColumns} from "@/app/dashboard/guardian/guardianColumns"
 import {DataTable} from "@/components/data-table"
 import {TextGenerateEffect} from "@/components/ui/text-generate-effect";
 import {Shell} from "lucide-react";
+import {comment} from "postcss";
 
 
 function Page() {
 
     const [open, setOpen] = useState(false);
+    const [id, setId] = useState<number | null>(null);
     const [firstname, setFirstName] = useState("")
     const [lastname, setLastName] = useState("")
     const [nic, setNic] = useState("")
@@ -106,13 +113,85 @@ function Page() {
 
 
     function refillGuardian (guardianObject:any):any{
-        setFirstName(guardianObject.firstname)
+        setOpen(true);
+        console.log("refill guardian")
+        setId(guardianObject.id);
+        setFirstName(guardianObject.firstname);
+        setLastName(guardianObject.lastname);
+        setNic(guardianObject.nic);
+        setMobile(guardianObject.mobile);
+        setAddress(guardianObject.address);
+        setNote(guardianObject.note);
+
+        setGuardianType(guardianObject.guardiantype_id);
+        setGender(guardianObject.gender);
+        setStatus(guardianObject.status);
+
+    }
+
+    function deleteGuardian(guardianObject:any):any{
+        //logic here
+        console.log("guardian delete clicked")
+        const userConfirm = confirm(`Are you sure to delete following guardian
+        first name is ${guardianObject.firstname}
+        last name is ${guardianObject.lastname}
+        `)
+        if (userConfirm) {
+            deleteGuardianService(guardianObject).then((res:any)=>{
+                alert(`guardian deleted successfully`)
+            }).catch((error:any)=>{
+                console.log(error);
+                alert(`Something went wrong ${error}`)
+            })
+        }
     }
 
 
+async function printGuardian (guardianObject:any){
+    console.log("guardian print clicked")
+    let newWindow :any = window.open();
+    await newWindow.document.write(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardian print</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <td>Employee id</td>
+            <td>${guardianObject.id}</td>
+        </tr>
+    </table>
+</body>
+</html>
+    `);
+
+    newWindow.stop();
+    newWindow.print();
+    newWindow.close();
+
+
+}
 
 
 
+
+    function UpdateGuardian():any{
+        const updateGuardianObject : Object = {id,firstname,lastname,nic,mobile,landno,address,guardiantype_id,gender,note,status}
+        const userConfirm = confirm(`Are you sure to update following guardian`)
+        if (userConfirm) {
+            updateGuardianService(updateGuardianObject).then((res:any)=>{
+                alert("Guardian updated successfully")
+                setOpen(false);
+            }).catch((error:any)=>{
+                console.log(error);
+                alert("Something went wrong")
+            })
+        }
+    }
 
 
 
@@ -125,6 +204,8 @@ function Page() {
             <div className="text-center bg-slate-900 dark:bg-slate-900 p-6 text-white dark:text-white mb-5">
                 <TextGenerateEffect words={guardianManagementMaster}/>
             </div>
+
+
 
             <div>
                 <Dialog open={open} onOpenChange={setOpen}>
@@ -190,7 +271,7 @@ function Page() {
 
                             <div className="col-span-1">
                                 <Label className="text-lg font-bold">Guardian Type</Label>
-                                <Select onValueChange={handelGuardianType}>
+                                <Select value={guardiantype_id ?? ''} onValueChange={handelGuardianType}>
                                     <SelectTrigger className="w-full">
                                         <SelectValue placeholder="Select Guardian Type"/>
                                     </SelectTrigger>
@@ -261,7 +342,7 @@ function Page() {
                             </div>
 
                             <div className="text-center">
-                                <Button variant="warning">Update</Button>
+                                <Button variant="warning" onClick={UpdateGuardian}>Update</Button>
                             </div>
 
 
@@ -279,7 +360,7 @@ function Page() {
 
 
             <div className="mt-5 p-3">
-                    <DataTable columns={getGuardianColumns(refillGuardian)} data={guardianList}/>
+                    <DataTable columns={getGuardianColumns(refillGuardian , deleteGuardian ,printGuardian)} data={guardianList}/>
             </div>
 
 

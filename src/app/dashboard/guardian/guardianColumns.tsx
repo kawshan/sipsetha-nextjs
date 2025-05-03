@@ -20,7 +20,12 @@ export type Guardian = {
     email: string
 }
 
-export function getGuardianColumns(refillGuardian: (guardian: Guardian) => void):ColumnDef<Guardian>[] {
+export function getGuardianColumns(
+    refillGuardian: (guardian: Guardian) => void,
+    deleteGuardian: (guardian: Guardian) => void,
+    printGuardian:(guardian:Guardian) => void,
+
+):ColumnDef<Guardian>[] {
     return[
         {
             accessorKey: "id",
@@ -30,7 +35,7 @@ export function getGuardianColumns(refillGuardian: (guardian: Guardian) => void)
                         variant="ghost"
                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                     >
-                        Email
+                        #
                         <ArrowUpDown className="ml-2 h-4 w-4"/>
                     </Button>
                 )
@@ -56,8 +61,8 @@ export function getGuardianColumns(refillGuardian: (guardian: Guardian) => void)
         },
 
         {
-            accessorKey: "landno",
-            header: "Land Num",
+            accessorKey: "guardiantype_id.name",
+            header: "Guardian Type",
         },
 
         {
@@ -86,14 +91,11 @@ export function getGuardianColumns(refillGuardian: (guardian: Guardian) => void)
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem
-                                onClick={() => (console.log(guardian))}
-                            >
-                                Refill Guardian
+                            <DropdownMenuItem onClick={() => refillGuardian(guardian)}>Refill Guardian
                             </DropdownMenuItem>
                             <DropdownMenuSeparator/>
-                            <DropdownMenuItem>Delete Guardian</DropdownMenuItem>
-                            <DropdownMenuItem>Print Guardian</DropdownMenuItem>
+                            <DropdownMenuItem onClick={()=> deleteGuardian(guardian)}>Delete Guardian</DropdownMenuItem>
+                            <DropdownMenuItem onClick={()=>printGuardian(guardian)}>Print Guardian</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 )

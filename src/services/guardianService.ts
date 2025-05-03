@@ -12,10 +12,14 @@ export function saveGuardianService(guardianObject:any):any{
 }
 
 
+export function deleteGuardianService(guardianObject:any):any{
+    return axios.delete(`${baseUrl}/guardian`,{data:guardianObject});
+}
 
 
-
-
+export function updateGuardianService(guardianObject:any):any{
+    return axios.put(`${baseUrl}/guardian`, guardianObject);
+}
 
 
 
