@@ -18,7 +18,7 @@ import {getAllGrades} from "@/services/grade";
 import {DataTable} from "@/components/data-table";
 import {getGuardianColumns} from "@/app/dashboard/guardian/guardianColumns";
 import {getStudentColumns} from "@/app/dashboard/student/studentColumns";
-import {getAllStudents} from "@/services/studentService";
+import {getAllStudents, saveStudentService} from "@/services/studentService";
 
 
 
@@ -86,6 +86,36 @@ const Page = () => {
     const printStudent = ()=>{
 
     }
+
+    const checkErrors = ()=>{
+
+    }
+
+
+
+
+
+
+
+    const saveStudent = ()=>{
+        const saveObject : Object = {firstname,lastname,dob,gender,address,mobile,status,grade_id,guardian_id};
+
+        const userConfirm = confirm(`are you sure to add following student`)
+        if (userConfirm){
+            saveStudentService(saveObject).then((res:any)=>{
+                alert('student saved successfully');
+                setDialogOpen(false);
+            }).catch((err:any)=>{
+                console.log(err);
+                alert('something wrong');
+            })
+        }
+
+
+
+    }
+
+
 
 
 
@@ -245,7 +275,7 @@ const Page = () => {
 
 
                             <div className="text-end">
-                                <Button variant="success">Save</Button>
+                                <Button variant="success" onClick={saveStudent}>Save</Button>
                             </div>
 
 
