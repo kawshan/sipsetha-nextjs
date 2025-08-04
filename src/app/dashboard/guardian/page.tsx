@@ -74,7 +74,7 @@ function Page() {
 
     function getGuardianTye(): any {
         getGuardianTypeService().then((res: any) => {
-            console.log("guardin type from function",res.data);
+            console.log("guarding type from function",res.data);
             setGuardianTypeList(res.data);
         })
     }
@@ -150,32 +150,7 @@ function Page() {
 
 
     async function printGuardian(guardianObject: any) {
-        console.log("guardian print clicked")
-        let newWindow: any = window.open();
-        await newWindow.document.write(`
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guardian print</title>
-</head>
-<body>
-    <table>
-        <tr>
-            <td>Employee id</td>
-            <td>${guardianObject.id}</td>
-        </tr>
-    </table>
-</body>
-</html>
-    `);
-
-        newWindow.stop();
-        newWindow.print();
-        newWindow.close();
-
-
+    //     let's implement prints from back end ---> this is the time to learn jasper reports
     }
 
 

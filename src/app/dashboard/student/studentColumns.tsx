@@ -1,34 +1,39 @@
 "use client"
-
-import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
+import React from 'react'
+import {ColumnDef} from "@tanstack/react-table";
 import {Button} from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react"
-import {DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuLabel,DropdownMenuSeparator,DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
+import {ArrowUpDown, MoreHorizontal} from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel, DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 
+export type Student={
+    stunum:string,
+    firstname:string,
+    lastname:string,
+    dob:string,
+    gender:string,
+    address:string,
+    mobile:string,
+    status:string,
+    note:string,
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Guardian = {
-    id: number
-    firstname: string
-    lastname: string
-    nic: string
-    mobile: string
-    landno: string
-    address: string
-    email: string
 }
 
-export function getGuardianColumns(
-    refillGuardian: (guardian: Guardian) => void,
-    deleteGuardian: (guardian: Guardian) => void,
-    printGuardian:(guardian:Guardian) => void,
+export function getStudentColumns(
 
-):ColumnDef<Guardian>[] {
-    return[
+    refillStudent:(student:Student) => void,
+    deleteStudent:(student:Student) => void,
+    printStudent:(student:Student) => void
+):ColumnDef<Student>[]{
+    return [
+
         {
-            accessorKey: "id",
+            accessorKey: "stunum",
             header: ({column}) => {
                 return (
                     <Button
@@ -41,19 +46,37 @@ export function getGuardianColumns(
                 )
             },
         },
+
         {
             accessorKey: "firstname",
             header: "First Name",
         },
+
         {
             accessorKey: "lastname",
             header: "Last Name",
         },
 
+
         {
-            accessorKey: "nic",
-            header: "NIC",
+            accessorKey: "dob",
+            header: "Date Of Birth",
         },
+
+
+
+        {
+            accessorKey: "gender",
+            header: "Gender",
+        },
+
+
+
+        {
+            accessorKey: "address",
+            header: "Address",
+        },
+
 
         {
             accessorKey: "mobile",
@@ -61,25 +84,16 @@ export function getGuardianColumns(
         },
 
         {
-            accessorKey: "guardiantype_id.name",
-            header: "Guardian Type",
-        },
-
-        {
-            accessorKey: "address",
-            header: "Address",
-        },
-
-        {
             accessorKey: "status",
             header: "Status",
         },
+
 
         {
             id: "actions",
             header: "Actions",
             cell: ({row}) => {
-                const guardian = row.original
+                const student = row.original
 
                 return (
                     <DropdownMenu>
@@ -91,16 +105,17 @@ export function getGuardianColumns(
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => refillGuardian(guardian)}>Refill Guardian
+                            <DropdownMenuItem onClick={() => refillStudent(student)}>Refill Guardian
                             </DropdownMenuItem>
                             <DropdownMenuSeparator/>
-                            <DropdownMenuItem onClick={()=> deleteGuardian(guardian)}>Delete Guardian</DropdownMenuItem>
-                            <DropdownMenuItem onClick={()=>printGuardian(guardian)}>Print Guardian</DropdownMenuItem>
+                            <DropdownMenuItem onClick={()=> deleteStudent(student)}>Delete Guardian</DropdownMenuItem>
+                            <DropdownMenuItem onClick={()=>printStudent(student)}>Print Guardian</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 )
             },
         },
+
 
 
     ]
