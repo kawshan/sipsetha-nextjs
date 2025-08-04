@@ -88,27 +88,73 @@ const Page = () => {
     }
 
     const checkErrors = ()=>{
+        let errors : string = '';
 
+        if (grade_id==null) {
+            errors=errors+'grade cannot be empty \n';
+        }
+        if (guardian_id==null) {
+            errors=errors+'guardian cannot be empty \n';
+        }
+        if (firstname==""){
+            errors=errors+"first name cannot be empty \n";
+        }
+        if (lastname==""){
+            errors=errors+'last name cannot be empty \n";'
+        }
+        if (dob==""){
+            errors=errors+'dob name cannot be empty \n";'
+        }
+
+
+
+
+        return errors;
     }
 
 
+const handleInput = (
+    setState: React.Dispatch<React.SetStateAction<string>>,
+    regexPattern:string,
+    fieldValue:string,
+)=>{
+          const regExp = new RegExp(regexPattern);
+          if (regExp.test(fieldValue)){
+              setState(fieldValue);
+          }else {
+
+          }
+
+}
 
 
 
 
 
     const saveStudent = ()=>{
-        const saveObject : Object = {firstname,lastname,dob,gender,address,mobile,status,grade_id,guardian_id};
+        const saveObject : Object = {firstname,lastname,dob,gender,address,mobile,status,grade_id,guardian_id,note};
 
-        const userConfirm = confirm(`are you sure to add following student`)
-        if (userConfirm){
-            saveStudentService(saveObject).then((res:any)=>{
-                alert('student saved successfully');
-                setDialogOpen(false);
-            }).catch((err:any)=>{
-                console.log(err);
-                alert('something wrong');
-            })
+        let error = checkErrors();
+        if (error==''){
+            const userConfirm = confirm(`are you sure to add following student \n
+            First Name ${firstname} \n
+            Last Name ${lastname} \n
+            Dob is ${dob} \n
+            Mobile is ${mobile}\n
+           
+            `);
+            if (userConfirm){
+                saveStudentService(saveObject).then((res:any)=>{
+                    alert('student saved successfully');
+                    setDialogOpen(false);
+                    getStudentList();
+                }).catch((err:any)=>{
+                    console.log(err);
+                    alert('something wrong');
+                })
+            }
+        }else {
+            alert(`you have some errors \n ${error}`)
         }
 
 
@@ -184,7 +230,7 @@ const Page = () => {
 
                             <div className="col-span-3">
                                 <Label className="text-lg font-bold">Mobile</Label>
-                                <Input className="h-[50px]" type="text" value={mobile} onChange={(e)=>setMobile(e.target.value)}></Input>
+                                <Input className="h-[50px]" type="text" value={mobile} onChange={(e)=>handleInput(setMobile,'',e.target.value)}></Input>
                             </div>
 
                         </div>
