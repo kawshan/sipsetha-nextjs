@@ -105,11 +105,11 @@ export function getStudentColumns(
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => refillStudent(student)}>Refill Guardian
+                            <DropdownMenuItem onClick={() => refillStudent(student)}>Refill
                             </DropdownMenuItem>
                             <DropdownMenuSeparator/>
-                            <DropdownMenuItem onClick={()=> deleteStudent(student)}>Delete Guardian</DropdownMenuItem>
-                            <DropdownMenuItem onClick={()=>printStudent(student)}>Print Guardian</DropdownMenuItem>
+                            <DropdownMenuItem onClick={()=> deleteStudent(student)}>Delete</DropdownMenuItem>
+                            <DropdownMenuItem onClick={()=>printStudent(student)}>Print</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 )

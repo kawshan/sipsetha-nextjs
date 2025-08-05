@@ -18,13 +18,20 @@ import {getAllGrades} from "@/services/grade";
 import {DataTable} from "@/components/data-table";
 import {getGuardianColumns} from "@/app/dashboard/guardian/guardianColumns";
 import {getStudentColumns} from "@/app/dashboard/student/studentColumns";
-import {getAllStudents, saveStudentService} from "@/services/studentService";
+import {
+    deleteStudentService,
+    getAllStudents,
+    saveStudentService,
+    updateStudentService
+} from "@/services/studentService";
 
 
 
 const Page = () => {
 
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [id,setId] = useState<number | null>(null);
+    const [stunum, setStunum] = useState("");
     const [firstname,setFirstName] = useState("");
     const [lastname,setLastName] = useState("");
     const [dob,setDob] = useState("");
@@ -33,6 +40,9 @@ const Page = () => {
     const [mobile,setMobile] = useState("");
     const [status,setStatus] = useState(true);
     const [note,setNote] = useState("");
+    const [addeddatetime, setAddeddatetime] = useState("");
+    const [modifydatetime, setModifydatetime] = useState("");
+    const [deletedatetime,setdeletedatetime] = useState("")
     const [guardian_id, setGuardianID] = useState(null);
     const [guardianList, setGuardianList] = useState([]);
     const [grade_id, setGradeID] = useState(null);
@@ -77,15 +87,26 @@ const Page = () => {
     }
 
 
-    const refillStudent = ()=>{
+    const refillStudent = (studentObject :any)=>{
+        setDialogOpen(true);
+        setId(studentObject.id);
+        setStunum(studentObject.stunum);
+        setFirstName(studentObject.firstname);
+        setLastName(studentObject.lastname);
+        setDob(studentObject.dob);
+        setGender(studentObject.gender);
+        setAddress(studentObject.address);
+        setMobile(studentObject.mobile);
+        setStatus(studentObject.status);
+        setNote(studentObject.note);
+        setAddeddatetime(studentObject.addeddatetime);
+        setModifydatetime(studentObject.modifydatetime);
+        setdeletedatetime(studentObject.deletedatetime);
+        setGuardianID(studentObject.guardian_id);
+        setGradeID(studentObject.grade_id);
 
     }
-    const deleteStudent = ()=>{
 
-    }
-    const printStudent = ()=>{
-
-    }
 
     const checkErrors = ()=>{
         let errors : string = '';
@@ -160,6 +181,53 @@ const handleInput = (
 
 
     }
+
+
+    const modifyStudent = ()=>{
+        let updateStudentObject : object = {id, stunum ,firstname,lastname,dob,gender,address,mobile,status,grade_id,guardian_id,note,addeddatetime,modifydatetime};
+        let error = checkErrors();
+        if (error==''){
+            const userConfirm = confirm(`are you sure to update student \n`);
+            if (userConfirm){
+                updateStudentService(updateStudentObject).then((res:any)=>{
+                    alert('student update successfully');
+                    setDialogOpen(false);
+                    getStudentList();
+                }).catch((error:any)=>{
+                    console.log(error);
+                    alert('something wrong');
+                })
+            }
+        }
+    }
+
+
+
+    const deleteStudent = (studentObject:any)=>{
+    const userConfirm = confirm(`are you sure to delete student \n`)
+        if (userConfirm){
+            deleteStudentService(studentObject).then((res:any)=>{
+                alert('student deleted successfully');
+                setDialogOpen(false);
+                getStudentList();
+            }).catch((err:any)=>{
+                console.log(err);
+                alert('something wrong');
+            });
+        }
+    }
+
+
+
+
+
+    const printStudent = ()=>{
+
+    }
+
+
+
+
 
 
 
@@ -316,7 +384,7 @@ const handleInput = (
                             </div>
 
                             <div className="text-center">
-                                <Button variant="warning">Update</Button>
+                                <Button variant="warning" onClick={modifyStudent}>Update</Button>
                             </div>
 
 
