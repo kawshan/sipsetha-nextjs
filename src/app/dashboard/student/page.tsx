@@ -59,6 +59,11 @@ const Page = () => {
         console.log(`student status is ${value}`);
     }
 
+    const handleGender = (value : any):any=>{
+        setGender(value);
+        console.log(`student gender is ${value}`);
+    }
+
     useEffect(()=>{
         getGuardianList();
         getGradeList();
@@ -279,8 +284,17 @@ const handleInput = (
 
                             <div>
                                 <Label className="text-lg font-bold">Gender</Label>
-                                <Input className="h-[50px]" type="text"></Input>
-                                {/*  need to complete this  */}
+                                <Select value={gender} onValueChange={(e)=>setGender(handleGender(e))}>
+                                    <SelectTrigger className="w-full h-[50px]">
+                                        <SelectValue placeholder="Select Gender" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem value={true}>Male</SelectItem>
+                                            <SelectItem value={false}>Female</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
                             </div>
 
 
@@ -326,7 +340,7 @@ const handleInput = (
 
                             <div className="col-span-2">
                                 <Label className="text-lg font-bold">note<i className="text-blue-800 font-semibold">(optional)</i></Label>
-                                <Input className="h-[50px]" type="text" value={note} onChange={(e)=>setNote(e.target.value)}/>
+                                <Input className="h-[50px]" type="text" value={note ?? ""} onChange={(e)=>setNote(e.target.value)}/>
 
                             </div>
 
