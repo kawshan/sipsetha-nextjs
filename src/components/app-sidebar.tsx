@@ -62,8 +62,8 @@ const data = {
           url: "/dashboard/guardian",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Student",
+          url: "/dashboard/student",
         },
         {
           title: "Settings",

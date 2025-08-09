@@ -75,9 +75,9 @@ function Layout({children}  :any) {
 
 
 
-            <div>
-                <FooterPage />
-            </div>
+            {/*<div>*/}
+            {/*    <FooterPage />*/}
+            {/*</div>*/}
         </div>
     );
 }
