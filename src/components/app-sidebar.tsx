@@ -39,16 +39,6 @@ const data = {
       logo: GalleryVerticalEnd,
       plan: "Education",
     },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
   ],
   navMain: [
     {
@@ -66,8 +56,8 @@ const data = {
           url: "/dashboard/student",
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "Student Class Registration",
+          url: "/dashboard/studentClassRegistration",
         },
       ],
     },
