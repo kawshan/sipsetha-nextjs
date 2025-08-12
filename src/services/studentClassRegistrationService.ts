@@ -6,9 +6,19 @@ export const getAllStudentClassRegistrationService = () => {
 }
 
 
+export function deleteStudentRegistrationService(registration:any){
+    return axios.delete(`${baseURL}/studentregistration`,{data:registration});
+}
 
 
+export function updateStudentRegistrationService(registration:any):any{
+    return axios.put(`${baseURL}/studentregistration`, registration);
+}
 
+
+export function saveStudentRegistrationService(registration:any):any{
+    return axios.post(`${baseURL}/studentregistration`, registration);
+}
 
 
 
