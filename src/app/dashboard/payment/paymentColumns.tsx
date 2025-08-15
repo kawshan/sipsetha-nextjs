@@ -75,7 +75,14 @@ export function getPaymentColumns(
         {
             accessorKey: "fees",
             header: "Fees",
+            cell: ({ row, column }) => {
+                // Get the value of this cell
+                const value = row.getValue<number>(column.id);
+                return value?.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? "";
+            },
         },
+
+
 
         {
             accessorKey: "month",
