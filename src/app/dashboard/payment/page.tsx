@@ -1,6 +1,6 @@
 "use client"
 import React, {useEffect, useState} from 'react'
-import {getAllPaymentsService} from "@/services/paymentService";
+import {getAllPaymentsService, savePaymentsService, updatePaymentsService} from "@/services/paymentService";
 import {DataTable} from "@/components/data-table";
 import {getPaymentColumns} from "@/app/dashboard/payment/paymentColumns";
 import {Label} from "@/components/ui/label";
@@ -13,7 +13,7 @@ import {Check, ChevronsUpDown} from "lucide-react";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
 import {cn} from "@/lib/utils";
 import {Button} from "@/components/ui/button";
-import {getStudentRegistrationListService} from "@/services/paymentType";
+import {getAllPaymentTypeService, getStudentRegistrationListService} from "@/services/paymentType";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 
 
@@ -87,7 +87,7 @@ const Page = () => {
 
 
     const getPaymentType = async () => {
-        const serverResponse = await getAllPaymentCategoryService();
+        const serverResponse = await getAllPaymentTypeService();
         setPaymentTypeList(serverResponse.data);
         console.log(`all payment type \n `, serverResponse.data);
     }
@@ -103,13 +103,145 @@ const Page = () => {
 
 
 
-    const refillPayment = () => {
-
+    const refillPayment = (ob:any) => {
+        setId(ob.id);
+        setFees(ob.fees);
+        setMonth(ob.month);
+        setBillnumber(ob.billnumber);
+        setPayedamount(ob.payedamount);
+        setBalanceamount(ob.balanceamount);
+        setReferencenumber(ob.referencenumber ?? '');
+        setCardno(ob.cardno ?? '');
+        setAddeddatetime(ob.addeddatetime);
+        setModifydatetime(ob.modifydatetime);
+        setAddeduser(ob.addeduser);
+        setModifyuser(ob.modifyuser);
+        setPaytype_id(ob.paytype_id);
+        setStudent_id(ob.student_id);
+        setStudentregistration_id(ob.studentregistration_id);
+        setPaymentcategory_id(ob.paymentcategory_id);
     }
 
 
     const printPayment = () => {
+
+
+
     }
+
+
+    const checkErrors = ()=>{
+        let errors = "";
+
+        if (student_id == null){
+            errors = errors+"Student Cannot Be Empty \n";
+        }
+
+        if (paymentcategory_id == null){
+            errors = errors+"Payment category Cannot Be Empty \n";
+        }
+
+
+        if (studentregistration_id == null){
+            errors = errors+"Student Registration Cannot Be Empty \n";
+        }
+
+
+
+        return errors;
+    }
+
+
+
+    const refreshStates = ()=>{
+        setStudent_id(null);
+        setPaymentcategory_id(null);
+        setStudentregistration_id(null);
+        setPaytype_id(null);
+        setFees("");
+        setMonth("");
+        setPayedamount("");
+        setBalanceamount("")
+        setReferencenumber("");
+        setCardno("");
+    }
+
+
+
+
+    const saveStudentPayment =async () => {
+
+        const saveObject = {student_id,paymentcategory_id,studentregistration_id,paytype_id,fees,month,payedamount,balanceamount,referencenumber,cardno}
+        let errors = checkErrors();
+        if (errors==""){
+            const userConfirm = confirm(`Are You Sure To Add Following Payment Information \n
+            Student Is ${student_id.firstname}
+            Payment Category is ${paymentcategory_id.name}
+            Registration Is ${studentregistration_id.classoffering_id.classname}
+            `);
+
+            if (userConfirm){
+                const serverResponse = await savePaymentsService(saveObject);
+                if (serverResponse.data === "ok"){
+                    alert("Save Successfully");
+                    getAllPayments();
+                    refreshStates();
+                }else {
+                    alert(`something went wrong!  ${serverResponse.data}`);
+                }
+            }
+        }else {
+            alert(`You Have Some Errors \n ${errors}`);
+        }
+
+
+
+
+    }
+
+
+
+
+    const updatePayment =async () =>{
+        const updateObject = {id,fees,month,billnumber,payedamount,balanceamount,referencenumber,cardno,addeddatetime,modifydatetime,addeduser,modifyuser,paytype_id,student_id,studentregistration_id,paymentcategory_id}
+        let errors = checkErrors();
+        if (errors==""){
+            const userConfirm = confirm(`Are You Sure To Update Following Payment Information \n
+            id is ${id}
+            Student Is ${student_id.firstname}
+            Payment Category is ${paymentcategory_id.name}
+            Registration Is ${studentregistration_id.classoffering_id.classname}
+            `);
+            if (userConfirm){
+                const serverResponse = await updatePaymentsService(updateObject);
+                if (serverResponse.data === "ok"){
+                    alert("Update Successfully");
+                    getAllPayments();
+                    refreshStates();
+                }else {
+                    alert(`something went wrong!  ${serverResponse.data}`);
+
+                }
+            }
+
+
+
+
+
+        }else {
+            alert(`You Have Some Errors \n ${errors} `);
+        }
+
+
+
+
+    }
+
+
+
+
+
+
 
 
     return (
@@ -133,7 +265,7 @@ const Page = () => {
                         <Popover open={stuCmbOpen} onOpenChange={setStuCmbOpen}>
                             <PopoverTrigger asChild>
                                 <Button variant="outline" role="combobox" aria-expanded={stuCmbOpen}
-                                        className="w-full justify-between">
+                                        className="w-full h-[50px] justify-between">
                                     {student_id ? student_id.firstname + " " + student_id.lastname : "select student"}
                                     <ChevronsUpDown className="opacity-50"/>
                                 </Button>
@@ -305,7 +437,7 @@ const Page = () => {
                     </div>
 
                     <div className="col-span-6">
-                        <Input type="text" className="h-[50px]" disabled={true}></Input>
+                        <Input type="text" className="h-[50px]" value={fees} onChange={(e)=> setFees(e.target.value)}></Input>
                     </div>
 
                 </div>
@@ -317,7 +449,7 @@ const Page = () => {
                     </div>
 
                     <div className="col-span-6">
-                        <Input type="month" className="h-[50px]"></Input>
+                        <Input type="month" className="h-[50px]" value={month} onChange={(e)=> setMonth(e.target.value)}></Input>
                     </div>
 
                 </div>
@@ -372,6 +504,20 @@ const Page = () => {
                                onChange={(e) => setCardno(e.target.value)}></Input>
                     </div>
 
+                </div>
+
+
+
+                <div className="grid grid-cols-12 gap-4 mt-20">
+                    <div className="col-span-4">
+                        <Button type="button" onClick={refreshStates}>reset</Button>
+                    </div>
+                    <div className="col-span-4 flex justify-center items-center">
+                        <Button type="button" onClick={updatePayment}>Update</Button>
+                    </div>
+                    <div className="col-span-4 flex justify-end items-center">
+                        <Button type="button" onClick={saveStudentPayment}>save</Button>
+                    </div>
                 </div>
 
 

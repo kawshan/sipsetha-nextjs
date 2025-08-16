@@ -6,11 +6,15 @@ export function getAllPaymentsService() {
 }
 
 
+export function savePaymentsService (payment:any) {
+    return axios.post(`${BASE_URL}/payment`, payment);
+}
 
 
 
-
-
+export function updatePaymentsService (payment:any) {
+    return axios.put(`${BASE_URL}/payment`, payment);
+}
 
 
 

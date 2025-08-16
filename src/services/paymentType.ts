@@ -11,3 +11,18 @@ export function getAllPaymentTypeService () {
 export function getStudentRegistrationListService (indexNumber:any) {
     return axios.get(`${baseURL}/studentregistration/${indexNumber}`)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
