@@ -7,7 +7,7 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel, DropdownMenuSeparator,
+    DropdownMenuLabel,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 
@@ -91,7 +91,6 @@ export function getAttendanceColumns(
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem onClick={() => refillAttendance(attendance)}>Refill
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator/>
                             <DropdownMenuItem onClick={()=> deleteAttendance(attendance)}>Delete</DropdownMenuItem>
                             <DropdownMenuItem onClick={()=>printAttendance(attendance)}>Print</DropdownMenuItem>
                         </DropdownMenuContent>

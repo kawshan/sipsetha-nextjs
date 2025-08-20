@@ -283,8 +283,13 @@ const Page = () => {
                                                     onSelect={() => {
                                                         setStudent_id(student_id?.id === student.id ? null : student);
                                                         setStuCmbOpen(false);
+
+                                                    }}
+
+                                                    onChange={()=>{
                                                         getStudentRegistrationList(student.stunum);
                                                     }}
+
                                                 >
                                                     {student.firstname + " " + student.lastname}
                                                     <Check
