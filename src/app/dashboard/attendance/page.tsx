@@ -3,7 +3,12 @@ import React, {useEffect, useState} from 'react'
 import {TextGenerateEffect} from "@/components/ui/text-generate-effect";
 import {DataTable} from "@/components/data-table";
 import {getAttendanceColumns} from "@/app/dashboard/attendance/attendanceColumns";
-import {getAllAttendanceServices} from "@/services/attendanceService";
+import {
+    deleteAttendanceService,
+    getAllAttendanceServices,
+    saveAttendanceService,
+    updateAttendanceService
+} from "@/services/attendanceService";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
 import {getAllStudents} from "@/services/studentService";
@@ -42,13 +47,6 @@ const Page = () => {
     const [clsCmbOpn, setClsCmbOpn] = useState(null);
 
 
-    const refillAttendance = () => {
-    }
-    const deleteAttendance = () => {
-    }
-    const printAttendance = () => {
-    }
-
     useEffect(() => {
         getAllAttendance();
         getStudent();
@@ -72,19 +70,153 @@ const Page = () => {
 
 
     const getClassOfferingList = async () => {
-            const serverResponse  = await getAllClassOfferingService();
-            setClassOfferingList(serverResponse.data);
-            console.log('class offering list' , serverResponse.data);
+        const serverResponse = await getAllClassOfferingService();
+        setClassOfferingList(serverResponse.data);
+        console.log('class offering list', serverResponse.data);
     }
 
     const getAllAttendanceStatus = async () => {
         const serverResponse = await getAllAttendanceStatusService();
         setAttendanceStatusList(serverResponse.data);
-        console.log('attendance status list' , serverResponse.data);
+        console.log('attendance status list', serverResponse.data);
+    }
+
+
+    const checkErrors = () => {
+        let errors = "";
+
+        if (student_id == null) {
+            errors = errors + "Student cannot be empty. \n";
+        }
+
+        if (classoffering_id == null) {
+            errors = errors + "Class cannot be empty. \n";
+        }
+
+        if (attendancestatus_id == null) {
+            errors = errors + "Status cannot be empty. \n";
+        }
+
+
+        return errors;
+    }
+
+
+    const refreshStates = () => {
+        setId(null);
+        setAddeduser(null);
+        setUpdateuser(null);
+        setDeleteuser(null);
+        setAddeddate("");
+        setUpdatedate("");
+        setDeletedate("");
+        setNote("");
+        setAttendancestatus_id(null);
+        setStudentId(null);
+        setClassoffering_id(null);
+    }
+
+
+    const saveAttendance = async () => {
+
+        const saveObject = {student_id, attendancestatus_id, classoffering_id, note}
+
+
+        let errors = checkErrors();
+        if (errors == "") {
+            const userConfirm = confirm(`Are You Sure To Add Following Attendace
+            Student name is ${student_id.firstname} ${student_id.lastname}
+            class name is ${classoffering_id.classname}
+            Status is ${attendancestatus_id.name}
+            `);
+            if (userConfirm) {
+                const ServerResponse = await saveAttendanceService(saveObject);
+                if (ServerResponse.data == "ok") {
+                    alert("Successfully added!");
+                    refreshStates();
+                    getAllAttendance();
+                } else {
+                    alert("Something went wrong!");
+                }
+            }
+        } else {
+            alert(`You Have Following errors \n ${errors}`)
+        }
+    }
+
+
+    const refillAttendance = (obj:any) => {
+        setId(obj.id);
+        setAddeduser(obj.addeduser);
+        setUpdateuser(obj.updateuser);
+        setDeleteuser(obj.deleteuser);
+        setAddeddate(obj.addeddate);
+        setUpdatedate(obj.updatedate);
+        setDeletedate(obj.deletedate);
+        setNote(obj.note);
+        setAttendancestatus_id(obj.attendancestatus_id);
+        setStudentId(obj.student_id);
+        setClassoffering_id(obj.classoffering_id);
+
+
+    }
+
+    const updateAttendance = async () => {
+
+        const updateObj = {id,addeduser,updateuser,deleteuser,addeddate,updatedate,deletedate,note,attendancestatus_id,classoffering_id,student_id}
+        let errors = checkErrors();
+        if (errors == "") {
+            const userConfirm = confirm(`Are You Sure To Update Attendace
+            Student name is ${student_id.firstname} ${student_id.lastname}
+            class name is ${classoffering_id.classname}
+            Status is ${attendancestatus_id.name}
+            `);
+            if (userConfirm) {
+               let serverResponse = await updateAttendanceService(updateObj);
+               if (serverResponse.data == "ok") {
+                   alert("Successfully updated!");
+                   refreshStates();
+                   await getAllAttendance();
+               }else {
+                   alert("Something went wrong!");
+               }
+            }
+        }
+
+
+
+    }
+
+
+    const deleteAttendance = async (obj:any) => {
+        const userConfirm = confirm(`Are You Sure To Update Attendace
+            Student name is ${obj.firstname} ${obj.lastname}
+            class name is ${obj.classoffering_id.classname}
+            Status is ${obj.attendancestatus_id.name}
+            `);
+
+        if (userConfirm) {
+            const serverResponse = await deleteAttendanceService(obj);
+            if (serverResponse.data == "ok") {
+                alert("Successfully deleted!");
+                refreshStates();
+                await getAllAttendance();
+            }else {
+                alert("Something went wrong!");
+            }
+        }
     }
 
 
 
+
+
+
+
+
+
+    const printAttendance = () => {
+    }
 
 
     const lblHeading = 'Attendance Master';
@@ -170,12 +302,12 @@ const Page = () => {
                                     <CommandInput placeholder="Select Class" className="h-9"/>
                                     <CommandEmpty>No Class found</CommandEmpty>
                                     <CommandGroup>
-                                        {classOfferingList.map((cls)=>(
+                                        {classOfferingList.map((cls) => (
                                             <CommandItem key={cls.id} value={cls.classname}
-                                            onSelect={()=>{
-                                                setClassoffering_id(classoffering_id?.id === cls.id ? null :cls);
-                                                setClsCmbOpn(false);
-                                            }}
+                                                         onSelect={() => {
+                                                             setClassoffering_id(classoffering_id?.id === cls.id ? null : cls);
+                                                             setClsCmbOpn(false);
+                                                         }}
                                             >
                                                 {cls.classname}
                                                 <Check className={cn(
@@ -199,15 +331,15 @@ const Page = () => {
                         <Label>Attendance Status <i className="text-red-700">*</i> </Label>
                     </div>
                     <div className="col-span-6">
-                        <Select value={attendancestatus_id?.name ?? ''} onValueChange={(selectedValue)=>{
-                            const selected = attendanceStatusList.find((attendance)=> attendance.name === selectedValue)
+                        <Select value={attendancestatus_id?.name ?? ''} onValueChange={(selectedValue) => {
+                            const selected = attendanceStatusList.find((attendance) => attendance.name === selectedValue)
                             setAttendancestatus_id(selected);
                         }}>
                             <SelectTrigger className="w-full min-h-[50px]">
-                                <SelectValue placeholder="Select Status" />
+                                <SelectValue placeholder="Select Status"/>
                             </SelectTrigger>
                             <SelectContent>
-                                {attendanceStatusList.map((status:any, index:number)=>(
+                                {attendanceStatusList.map((status: any, index: number) => (
                                     <SelectItem key={index} value={status.name}>{status.name}</SelectItem>
                                 ))}
                             </SelectContent>
@@ -221,7 +353,19 @@ const Page = () => {
                         <Label>Note <i className="text-indigo-700">(optional)</i> </Label>
                     </div>
                     <div className="col-span-6">
-                        <Textarea value={note} onChange={(e)=>setNote(e.target.value)} placeholder="Enter Note Here"/>
+                        <Textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="Enter Note Here"/>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-12 gap-4 mt-20">
+                    <div className="col-span-4">
+                        <Button type="button" onClick={refreshStates}>reset</Button>
+                    </div>
+                    <div className="col-span-4 flex justify-center items-center">
+                        <Button type="button" onClick={updateAttendance}>Update</Button>
+                    </div>
+                    <div className="col-span-4 flex justify-end items-center">
+                        <Button type="button" onClick={saveAttendance}>save</Button>
                     </div>
                 </div>
 

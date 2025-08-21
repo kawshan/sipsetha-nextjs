@@ -7,6 +7,17 @@ export function getAllAttendanceServices() {
 }
 
 
+export function saveAttendanceService(attendance: any) {
+    return axios.post(`${baseURL}/attendance`, attendance)
+}
 
+export function deleteAttendanceService(attendance: any) {
+    return axios.delete(`${baseURL}/attendance`,{data:attendance})
+}
+
+
+export function updateAttendanceService(attendance: any) {
+    return axios.put(`${baseURL}/attendance`, attendance)
+}
 
 
