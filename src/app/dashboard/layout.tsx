@@ -29,16 +29,45 @@ function Layout({children}  :any) {
                 className={cn("fixed top-10 inset-x-0 max-w-2xl mx-auto z-50", className)}
             >
                 <Menu setActive={setActive}>
-                    <MenuItem setActive={setActive} active={active} item="Services">
+
+                    <MenuItem setActive={setActive} active={active} item="Home">
                         <div className="flex flex-col space-y-4 text-sm">
-                            <HoveredLink href="/web-dev">Web Development</HoveredLink>
-                            <HoveredLink href="/interface-design">Interface Design</HoveredLink>
-                            <HoveredLink href="/seo">Search Engine Optimization</HoveredLink>
-                            <HoveredLink href="/branding">Branding</HoveredLink>
+                            <HoveredLink href="/dashboard">Dashboard</HoveredLink>
                         </div>
                     </MenuItem>
 
-                    <MenuItem setActive={setActive} active={active} item="Pricing">
+
+                    <MenuItem setActive={setActive} active={active} item="Administration">
+                        <div className="flex flex-col space-y-4 text-sm">
+                            <HoveredLink href="/dashboard/employee">Employee Master</HoveredLink>
+                            <HoveredLink href="/dashboard/user">User Master</HoveredLink>
+                            <HoveredLink href="/dashboard/privilege">Privilege Master</HoveredLink>
+                        </div>
+                    </MenuItem>
+
+
+
+                    <MenuItem setActive={setActive} active={active} item="Student">
+                        <div className="flex flex-col space-y-4 text-sm">
+                            <HoveredLink href="/dashboard/guardian">Guardian Master</HoveredLink>
+                            <HoveredLink href="/dashboard/student">Student Master</HoveredLink>
+                            <HoveredLink href="/dashboard/studentClassRegistration">Student Class Registration Master</HoveredLink>
+                            <HoveredLink href="/dashboard/payment">Payment Master</HoveredLink>
+                            <HoveredLink href="/dashboard/attendance">Attendance Master</HoveredLink>
+                        </div>
+                    </MenuItem>
+
+                    <MenuItem setActive={setActive} active={active} item="Class">
+                        <div className="flex flex-col space-y-4 text-sm">
+                            <HoveredLink href="/dashboard/classhall">class hall</HoveredLink>
+                            <HoveredLink href="/individual">Individual</HoveredLink>
+                            <HoveredLink href="/team">Team</HoveredLink>
+                            <HoveredLink href="/enterprise">Enterprise</HoveredLink>
+                        </div>
+                    </MenuItem>
+
+
+                    <MenuItem setActive={setActive} active={active} item="Teacher">
                         <div className="flex flex-col space-y-4 text-sm">
                             <HoveredLink href="/hobby">Hobby</HoveredLink>
                             <HoveredLink href="/individual">Individual</HoveredLink>
@@ -46,6 +75,9 @@ function Layout({children}  :any) {
                             <HoveredLink href="/enterprise">Enterprise</HoveredLink>
                         </div>
                     </MenuItem>
+
+
+
                 </Menu>
             </div>
         );
