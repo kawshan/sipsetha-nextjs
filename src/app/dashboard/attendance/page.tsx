@@ -12,6 +12,9 @@ import {Button} from "@/components/ui/button";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
 import {Check, ChevronsUpDown} from "lucide-react";
 import {cn} from "@/lib/utils";
+import {getAllClassOfferingService} from "@/services/classOfferingService";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {getAllAttendanceStatusService} from "@/services/attendanceStatus";
 
 
 const Page = () => {
@@ -31,9 +34,12 @@ const Page = () => {
 
     const [attendanceList, setAttendanceList] = useState([]);
     const [studentList, setStudentList] = useState([]);
+    const [classOfferingList, setClassOfferingList] = useState([]);
+    const [attendanceStatusList, setAttendanceStatusList] = useState([]);
 
 
     const [stuCmbOpen, setStuCmbOpen] = useState(false);
+    const [clsCmbOpn, setClsCmbOpn] = useState(null);
 
 
     const refillAttendance = () => {
@@ -46,6 +52,8 @@ const Page = () => {
     useEffect(() => {
         getAllAttendance();
         getStudent();
+        getClassOfferingList();
+        getAllAttendanceStatus();
     }, [])
 
 
@@ -61,6 +69,22 @@ const Page = () => {
         setStudentList(serverResponse.data);
         console.log(serverResponse.data);
     }
+
+
+    const getClassOfferingList = async () => {
+            const serverResponse  = await getAllClassOfferingService();
+            setClassOfferingList(serverResponse.data);
+            console.log('class offering list' , serverResponse.data);
+    }
+
+    const getAllAttendanceStatus = async () => {
+        const serverResponse = await getAllAttendanceStatusService();
+        setAttendanceStatusList(serverResponse.data);
+        console.log('attendance status list' , serverResponse.data);
+    }
+
+
+
 
 
     const lblHeading = 'Attendance Master';
@@ -134,7 +158,39 @@ const Page = () => {
                     <div className="col-span-6">
                         <Label>Class Name <i className="text-red-700">*</i> </Label>
                     </div>
-                    <div className="col-span-6"></div>
+                    <div className="col-span-6">
+                        <Popover open={clsCmbOpn} onOpenChange={setClsCmbOpn}>
+                            <PopoverTrigger asChild>
+                                <Button variant="outline" role="combobox" className="w-full h-[50px] justify-between">
+                                    {classoffering_id ? classoffering_id.classname : "Select Class"}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[1000px] p-0">
+                                <Command>
+                                    <CommandInput placeholder="Select Class" className="h-9"/>
+                                    <CommandEmpty>No Class found</CommandEmpty>
+                                    <CommandGroup>
+                                        {classOfferingList.map((cls)=>(
+                                            <CommandItem key={cls.id} value={cls.classname}
+                                            onSelect={()=>{
+                                                setClassoffering_id(classoffering_id?.id === cls.id ? null :cls);
+                                                setClsCmbOpn(false);
+                                            }}
+                                            >
+                                                {cls.classname}
+                                                <Check className={cn(
+                                                    "ml-auto",
+                                                    classoffering_id?.id === cls.id ? "opacity-100" : "opacity-0"
+                                                )}
+
+                                                />
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
                 </div>
 
 
@@ -142,7 +198,21 @@ const Page = () => {
                     <div className="col-span-6">
                         <Label>Attendance Status <i className="text-red-700">*</i> </Label>
                     </div>
-                    <div className="col-span-6"></div>
+                    <div className="col-span-6">
+                        <Select value={attendancestatus_id?.name ?? ''} onValueChange={(selectedValue)=>{
+                            const selected = attendanceStatusList.find((attendance)=> attendance.name === selectedValue)
+                            setAttendancestatus_id(selected);
+                        }}>
+                            <SelectTrigger className="w-full min-h-[50px]">
+                                <SelectValue placeholder="Select Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {attendanceStatusList.map((status:any, index:number)=>(
+                                    <SelectItem key={index} value={status.name}>{status.name}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
 
 
@@ -151,7 +221,7 @@ const Page = () => {
                         <Label>Note <i className="text-indigo-700">(optional)</i> </Label>
                     </div>
                     <div className="col-span-6">
-                        <Textarea placeholder="Enter Note Here"/>
+                        <Textarea value={note} onChange={(e)=>setNote(e.target.value)} placeholder="Enter Note Here"/>
                     </div>
                 </div>
 
