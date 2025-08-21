@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const Page = () => {
     return (
-        <div>
+        <div className="mt-10">
 
             <p className="text-lg text-center text-green-900 font-bold">Student Section</p>
             <div className="grid grid-cols-5 gap-6 mt-10">
