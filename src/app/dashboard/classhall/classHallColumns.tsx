@@ -66,6 +66,10 @@ export function getClassHallColumns(
             header: "Location",
         },
 
+        {
+            accessorKey: "mincount",
+            header: "Student Count",
+        },
 
         {
             accessorKey: "tablecount",

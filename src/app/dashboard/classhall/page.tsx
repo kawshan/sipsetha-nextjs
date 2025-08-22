@@ -6,15 +6,21 @@ import {Textarea} from "@/components/ui/textarea";
 import {Input} from "@/components/ui/input";
 import {DataTable} from "@/components/data-table";
 import {getClassHallColumns} from "@/app/dashboard/classhall/classHallColumns";
-import {getAllClassHallService} from "@/services/classHallService";
+import {
+    deleteClassHallService,
+    getAllClassHallService,
+    saveClassHallService,
+    updateClassHallService
+} from "@/services/classHallService";
 import {getAllClassHallFeaturesService} from "@/services/classHallFeatures";
 
-
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Button} from "@/components/ui/button";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
 import {Check, ChevronsUpDown} from "lucide-react";
 import {cn} from "@/lib/utils";
+import {getAllClassHallStatusService} from "@/services/classHallStatusService";
 
 
 const Page = () => {
@@ -40,6 +46,7 @@ const Page = () => {
 
     const [classHallList, setClassHallList] = useState([]);
     const [classHallFeaturesList, setClassHallFeaturesList] = useState([]);
+    const [classHallStatusList, setClassHallStatusList] = useState([]);
 
 
     const [ftrCmbOpen, setFtrCmbOpen] = useState(false);
@@ -51,19 +58,50 @@ const Page = () => {
 
     useEffect(() => {
         getAllClassHall();
-        getAllClassHallFeatures()
+        getAllClassHallFeatures();
+        getAllClassHallStatus();
     },[])
 
 
 
-    const refillClassHall = ()=>{
+    const refillClassHall = (obj:any)=>{
+        setId(obj.id);
+        setName(obj.name);
+        setLocation(obj.location);
+        setMinCount(obj.mincount);
+        setMaxCount(obj.maxcount);
+        setTablecount(obj.tablecount);
+        setBenchCount(obj.benchcount);
+        setMaxtablecount(obj.maxtablecount);
+        setMaxbenchcount(obj.maxbenchcount)
+        setNote(obj.note == null ? "" : obj.note);
+        setAddeddatetime(obj.addeddatetime);
+        setModifydatetime(obj.modifydatetime);
+        setDeletedatetime(obj.deletedatetime);
+        setAddeduserid(obj.addeduserid);
+        setClasshallstatus_id(obj.classhallstatus_id);
+        setFeatures(obj.features);
 
     }
 
 
 
-    const deleteClassHall = ()=>{
+    const deleteClassHall = async (obj:any)=>{
+        const userConfirm = confirm(`Are You Sure To Update Following Information
+            Name Is ${obj.name}
+            location Is ${obj.location}
+            `);
 
+        if (userConfirm) {
+            const serverResponse = await deleteClassHallService(obj);
+            if (serverResponse.data=="ok") {
+                alert("Successfully Deleted");
+                await getAllClassHall();
+                refreshStates();
+            }else {
+                alert(`Something went wrong`);
+            }
+        }
     }
 
 
@@ -89,8 +127,136 @@ const Page = () => {
     }
 
 
+    const getAllClassHallStatus = async () => {
+        const serverResponse = await getAllClassHallStatusService();
+        setClassHallStatusList(serverResponse.data);
+
+    }
 
 
+
+    const checkErrors = ()=>{
+        let errors = "";
+
+        if (name == ""){
+            errors = errors + "Name Cannot Be Empty \n";
+        }
+
+        if (location == ""){
+            errors = errors + "Location Cannot Be Empty \n";
+        }
+
+        if (mincount == ""){
+            errors = errors + "MinCount Cannot Be Empty \n";
+        }
+
+        if (maxcount == ""){
+            errors = errors + "MaxCount Cannot Be Empty \n";
+        }
+
+        if (tablecount == ""){
+            errors = errors + "Min TableCount Cannot Be Empty \n";
+        }
+
+        if (benchcount == ""){
+            errors = errors + "Min BenchCount Cannot Be Empty \n";
+        }
+
+        if (maxtablecount == ""){
+            errors = errors + "MaxTableCount Cannot Be Empty \n";
+        }
+
+        if (maxbenchcount == ""){
+            errors = errors + "Max Bench Count Cannot Be Empty \n";
+        }
+
+        if (classhallstatus_id == null) {
+            errors = errors + "ClassHallStatus Cannot Be Empty \n";
+        }
+
+
+        return errors;
+    }
+
+
+    const saveClassHall = async ()=>{
+
+        const saveObject = {name,location,mincount,maxcount,tablecount,benchcount,maxtablecount,maxbenchcount,note,classhallstatus_id,features}
+
+
+        let errors = checkErrors();
+        if (errors == ""){
+
+            const userConfirm = confirm(`Are you sure you want to Add this Class Hall ? \n ${name}`);
+            if (userConfirm) {
+                const serverResponse = await saveClassHallService(saveObject);
+                if (serverResponse.data == "ok") {
+                    alert("Successfully Saved!");
+                    await getAllClassHall();
+                    refreshStates();
+                }
+            }
+
+
+
+        }else {
+            alert(`You Have Following Errors \n ${errors}`);
+        }
+    }
+
+
+
+    const updateClassHall = async ()=>{
+
+        const updateObject = {id,name,location,mincount,maxcount,tablecount,benchcount,maxtablecount,maxbenchcount,note,addeddatetime,modifydatetime,deletedatetime,addeduserid,classhallstatus_id,features};
+
+        let errors = checkErrors();
+        if (errors == ""){
+            const userConfirm = confirm(`Are You Sure To Update Following Information
+            Name Is ${name}
+            location Is ${location}
+            `);
+            if (userConfirm) {
+                const serverResponse = await updateClassHallService(updateObject);
+                if (serverResponse.data == "ok") {
+                    alert("Successfully Updated!");
+                    await getAllClassHall();
+                    refreshStates();
+                }else {
+                    alert(`Something went wrong!`);
+                }
+            }
+        }else {
+            alert(`You Have Some Errors \n ${errors}`);
+        }
+
+
+
+
+
+
+
+    }
+
+
+    const refreshStates = ()=>{
+        setId(null);
+        setName("");
+        setLocation("");
+        setMinCount("");
+        setMaxCount("");
+        setTablecount("");
+        setBenchCount("");
+        setMaxtablecount("");
+        setMaxbenchcount("");
+        setNote("");
+        setAddeddatetime("");
+        setModifydatetime("");
+        setDeletedatetime("");
+        setAddeduserid(null);
+        setClasshallstatus_id(null);
+        setFeatures([]);
+    }
 
 
 
@@ -207,7 +373,19 @@ const Page = () => {
                         <Label>Class Hall Status <i className="text-red-700">*</i> </Label>
                     </div>
                     <div className="col-span-6">
-
+                        <Select value={classhallstatus_id?.name ?? ''} onValueChange={(selectedValue)=>{
+                            const selected = classHallStatusList.find((status)=>status.name === selectedValue);
+                            setClasshallstatus_id(selected);
+                        }}>
+                           <SelectTrigger className="w-full min-h-[50px]">
+                               <SelectValue placeholder="Select Status" />
+                           </SelectTrigger>
+                            <SelectContent>
+                                {classHallStatusList.map((status)=>(
+                                    <SelectItem value={status.name} key={status.id}>{status.name}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
 
@@ -256,6 +434,20 @@ const Page = () => {
                                 </Command>
                             </PopoverContent>
                         </Popover>
+                    </div>
+                </div>
+
+
+
+                <div className="grid grid-cols-12 gap-4 mt-20">
+                    <div className="col-span-4">
+                        <Button type="button" onClick={refreshStates}>reset</Button>
+                    </div>
+                    <div className="col-span-4 flex justify-center items-center">
+                        <Button type="button" onClick={updateClassHall}>Update</Button>
+                    </div>
+                    <div className="col-span-4 flex justify-end items-center">
+                        <Button type="button" onClick={saveClassHall}>save</Button>
                     </div>
                 </div>
 
