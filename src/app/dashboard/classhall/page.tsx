@@ -7,6 +7,15 @@ import {Input} from "@/components/ui/input";
 import {DataTable} from "@/components/data-table";
 import {getClassHallColumns} from "@/app/dashboard/classhall/classHallColumns";
 import {getAllClassHallService} from "@/services/classHallService";
+import {getAllClassHallFeaturesService} from "@/services/classHallFeatures";
+
+
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {Button} from "@/components/ui/button";
+import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
+import {Check, ChevronsUpDown} from "lucide-react";
+import {cn} from "@/lib/utils";
+
 
 const Page = () => {
 
@@ -26,10 +35,14 @@ const Page = () => {
     const [deletedatetime, setDeletedatetime] = useState("");
     const [addeduserid, setAddeduserid] = useState(null);
     const [classhallstatus_id,setClasshallstatus_id] = useState(null);
-    const [features, setFeatures] = useState([]);
+    const [features, setFeatures] = useState<any[]>([]);
 
 
     const [classHallList, setClassHallList] = useState([]);
+    const [classHallFeaturesList, setClassHallFeaturesList] = useState([]);
+
+
+    const [ftrCmbOpen, setFtrCmbOpen] = useState(false);
 
 
 
@@ -38,6 +51,7 @@ const Page = () => {
 
     useEffect(() => {
         getAllClassHall();
+        getAllClassHallFeatures()
     },[])
 
 
@@ -64,6 +78,21 @@ const Page = () => {
             const serverResponse = await getAllClassHallService();
             setClassHallList(serverResponse.data);
     }
+
+
+
+
+    const getAllClassHallFeatures = async () => {
+        const serverResponse = await getAllClassHallFeaturesService();
+        setClassHallFeaturesList(serverResponse.data);
+        console.log(serverResponse.data);
+    }
+
+
+
+
+
+
 
 
     return (
@@ -189,7 +218,44 @@ const Page = () => {
                         <Label>Features <i className="text-red-700">*</i> </Label>
                     </div>
                     <div className="col-span-6">
-
+                        <Popover open={ftrCmbOpen} onOpenChange={setFtrCmbOpen}>
+                            <PopoverTrigger asChild>
+                                <Button variant="outline" role="combobox" aria-expanded={ftrCmbOpen} className="w-full h-[50px] justify-between">
+                                    {features.length > 0 ? features.map(f=> f.name).join(', ') : 'Select Features' }
+                                    <ChevronsUpDown className="opacity-50" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[1000px] p-0">
+                                <Command>
+                                    <CommandInput placeholder="Search Feature" />
+                                    <CommandList>
+                                        <CommandEmpty>No Feature Found</CommandEmpty>
+                                        <CommandGroup>
+                                            {classHallFeaturesList.map((feature)=>(
+                                                <CommandItem
+                                                key={feature.id}
+                                                value={feature.name}
+                                                onSelect={()=>{
+                                                    if (features.some(f=> f.id === feature.id)){
+                                                        setFeatures(features.filter(f => f.id !== feature.id))
+                                                    }else {
+                                                        setFeatures([...features,feature])
+                                                    }
+                                                }}
+                                                >
+                                                    {feature.name}
+                                                    <Check className={cn(
+                                                        "ml-auto",
+                                                        features.some(s=> s.id === feature.id) ? "opacity-100" : "opacity-0"
+                                                    )}
+                                                           />
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
                     </div>
                 </div>
 
