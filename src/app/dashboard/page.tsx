@@ -116,31 +116,10 @@ const Page = () => {
                     <p className="text-lg text-slate-700">Student Master</p>
                 </div>
 
-                <div>
-                    <Link href="/dashboard/studentClassRegistration">
-                        <img src="/images/icons/registration.png" alt="Registration image"/>
-                    </Link>
-                    <br/>
-                    <p className="text-lg text-slate-700">Student Class Registration Master</p>
-                </div>
 
 
-                <div>
-                    <Link href="/dashboard/payment">
-                        <img src="/images/icons/payment.png" alt="Payment image"/>
-                    </Link>
-                    <br/>
-                    <p className="text-lg text-slate-700">Payment Master</p>
-                </div>
 
 
-                <div>
-                    <Link href="/dashboard/attendance">
-                        <img src="/images/icons/attendance.png" alt="Attendance image"/>
-                    </Link>
-                    <br/>
-                    <p className="text-lg text-slate-700">Attendance Master</p>
-                </div>
 
 
 
@@ -187,13 +166,7 @@ const Page = () => {
                 </div>
 
 
-                <div>
-                    <Link href="/dashboard/attendance">
-                        <img src="/images/icons/attendance.png" alt="Attendance image"/>
-                    </Link>
-                    <br/>
-                    <p className="text-lg text-slate-700">Attendance Master</p>
-                </div>
+
 
 
 

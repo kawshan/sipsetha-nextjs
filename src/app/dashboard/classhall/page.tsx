@@ -21,6 +21,8 @@ import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandL
 import {Check, ChevronsUpDown} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {getAllClassHallStatusService} from "@/services/classHallStatusService";
+import { toast } from "sonner";
+
 
 
 const Page = () => {
@@ -95,7 +97,9 @@ const Page = () => {
         if (userConfirm) {
             const serverResponse = await deleteClassHallService(obj);
             if (serverResponse.data=="ok") {
-                alert("Successfully Deleted");
+                toast.success("Successfully Deleted", {
+                    className: "h-[100px]", // width 24rem
+                });
                 await getAllClassHall();
                 refreshStates();
             }else {
