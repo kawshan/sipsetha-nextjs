@@ -2,7 +2,12 @@
 import React, {useEffect, useState} from 'react'
 import {DataTable} from "@/components/data-table";
 import {getClassRoomAllocationColumns} from "@/app/dashboard/classRoomAllocation/ClassRoomAllocationColumns";
-import {getAllClassRoomAllocationServices} from "@/services/classRoomAllocationService";
+import {
+    deleteClassRoomAllocationService,
+    getAllClassRoomAllocationServices,
+    saveClassRoomAllocationService,
+    updateClassRoomAllocationService
+} from "@/services/classRoomAllocationService";
 import {TextGenerateEffect} from "@/components/ui/text-generate-effect";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
@@ -18,6 +23,9 @@ import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandL
 import {cn} from "@/lib/utils";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Button} from "@/components/ui/button";
+import {Textarea} from "@/components/ui/textarea";
+import {toast} from "sonner";
+import {getAllClassRoomAllocationStatusServices} from "@/services/classRoomAllocationStatusService";
 
 const Page = () => {
 
@@ -40,6 +48,7 @@ const Page = () => {
     const [allocationTypeList,setAllocationTypeList] = useState([]);
     const [classHallList,setClassHallList] = useState([]);
     const [classOfferingList,setClassOfferingList] = useState([]);
+    const [allocationStatusList,setAllocationStatusList] = useState([]);
 
     const [clsCmbOpen,setClsCmbOpen] = useState(false);
     const [offeringCmbOpen,setOfferingCmbOpen] = useState(false);
@@ -53,6 +62,7 @@ const Page = () => {
         getAllAllocationTypeList();
         getAllClassHallList();
         getAllClassOfferingList();
+        getAllClassRoomAllocationStatus();
     },[])
 
 
@@ -62,6 +72,14 @@ const Page = () => {
         setClassRoomAllocationList(serverResponse.data);
         console.log('all class room allocations', serverResponse.data);
     }
+
+
+    const getAllClassRoomAllocationStatus = async () => {
+        const serverResponse  = await getAllClassRoomAllocationStatusServices();
+        setAllocationStatusList(serverResponse.data);
+        console.log(`Allocation Status List`, serverResponse.data);
+    }
+
 
     const getAllWeekday = async () => {
         const serverResponse = await getAllWeekdayService();
@@ -91,14 +109,168 @@ const Page = () => {
     }
 
 
+    const refreshStates = ()=>{
+        setId("");
+        setStarttime("");
+        setEndtime("");
+        setNote("");
+        setAddeddatetime("");
+        setModifydatetime("");
+        setDeletedatetime("");
+        setAllocationstatus_id(null);
+        setAllocationtype_id(null);
+        setWeekday_id(null);
+        setClasshall_id(null);
+        setClassoffering_id(null);
+    }
+
+
+
+
+    const refillClassRoomAllocation =  (obj:any) => {
+        setId(obj.id);
+        setStarttime(obj.starttime);
+        setEndtime(obj.endtime);
+        setNote(obj.note == null ? "" : obj.note);
+        setAddeddatetime(obj.addeddatetime);
+        setModifydatetime(obj.modifydatetime);
+        setDeletedatetime(obj.deletedatetime);
+        setAllocationstatus_id(obj.allocationstatus_id);
+        setAllocationtype_id(obj.allocationtype_id);
+        setWeekday_id(obj.weekday_id);
+        setClasshall_id(obj.classhall_id);
+        setClassoffering_id(obj.classoffering_id);
+    }
+
+    const checkErrors = ()=>{
+        let errors = ""
+
+        if (allocationstatus_id==null){
+            errors = errors + "Status Cannot Be Empty \n"
+        }
+
+        if (allocationtype_id == null){
+            errors = errors + "Allocation Type Cannot Be Empty \n"
+        }
+
+        if (weekday_id == null){
+            errors = errors + "Weekday cannot Be Empty \n"
+        }
+
+        if (classhall_id == null){
+            errors = errors + "Class Hall cannot Be Empty \n"
+        }
+
+        if (classoffering_id == null){
+            errors = errors + "Class Offering cannot Be Empty \n"
+        }
+
+        if (starttime == ""){
+            errors = errors + "Start time cannot Be Empty \n"
+        }
+
+        if (endtime == ""){
+            errors = errors + "End time cannot Be Empty \n"
+        }
+
+
+
+        return errors;
+    }
+
+
+
+
+    const saveClassRoomAllocation = async ()=>{
+
+        const saveObject = {starttime,endtime,allocationtype_id,weekday_id,classhall_id,classoffering_id,allocationstatus_id,note}
+
+            let errors = checkErrors();
+            if (errors == ""){
+                const userConfirm = confirm(`Are You Sure to add Following Information \n
+                Start time is ${starttime}
+                \n End time is ${endtime}
+                \n Hall Is ${classhall_id.name} 
+                `);
+                if (userConfirm){
+                    const serverResponse = await saveClassRoomAllocationService(saveObject);
+                    if (serverResponse.data=="ok"){
+                        toast.success("Class added successfully.");
+                        refreshStates();
+                        await getAllClassRoomAllocation();
+                    }else {
+                        toast.error(`Something went wrong.` , serverResponse.data);
+                    }
+                }
+            }else {
+                toast.error(`You Have Some Errors \n ${errors}`)
+            }
+    }
+
+
+    const updateClassRoomAllocation = async ()=>{
+
+        const updateObject = {id,starttime,endtime,note,addeddatetime,modifydatetime,deletedatetime,allocationstatus_id,allocationtype_id,weekday_id,classhall_id,classoffering_id};
+
+        const errors = checkErrors();
+        if (errors == ""){
+            const userConfirm = confirm(`Are You Sure to add Following Information \n
+                Start time is ${starttime}
+                \n End time is ${endtime}
+                \n Hall Is ${classhall_id.name} 
+                `);
+            if (userConfirm){
+                const serverResponse = await updateClassRoomAllocationService(updateObject);
+                if (serverResponse.data=="ok"){
+                    toast.success("Class added successfully.");
+                    refreshStates();
+                    await getAllClassRoomAllocation();
+                }else {
+                    toast.error(`Something went wrong.` , serverResponse.data);
+                }
+            }
+        }else {
+            toast.info(`You Have some Errors \n ${errors}`);
+        }
+    }
 
 
 
 
 
-    const refillClassRoomAllocation =  () => {}
-    const deleteClassRoomAllocation =  () => {}
-    const printClassRoomAllocation =  () => {}
+
+
+    const deleteClassRoomAllocation = async  (obj:any) => {
+
+        const userConfirm = confirm(`Are You Sure to add Following Information \n
+                Start time is ${obj.starttime}
+                \n End time is ${obj.endtime}
+                \n Hall Is ${obj.classhall_id.name} 
+                `);
+        if (userConfirm){
+            const serverResponse = await deleteClassRoomAllocationService(obj);
+            if (serverResponse.data=="ok"){
+                toast.success("Class deleted successfully.");
+                refreshStates();
+                await getAllClassRoomAllocation();
+            }else {
+                toast.error(`Something went wrong.` , serverResponse.data);
+            }
+        }
+    }
+
+
+
+
+    const printClassRoomAllocation =  () => {
+
+
+
+    }
+
+
+
+
 
     const lblHeading = 'Class Room Allocation Master';
 
@@ -255,6 +427,56 @@ const Page = () => {
                                 </Command>
                             </PopoverContent>
                         </Popover>
+                    </div>
+                </div>
+
+
+
+                <div className="grid grid-cols-12 gap-4 mb-5">
+                    <div className="col-span-6">
+                        <Label htmlFor="Select Status"> Status <i className="text-red-500">*</i> </Label>
+                    </div>
+                    <div className="col-span-6">
+                        <Select value={allocationstatus_id?.name ?? ''} onValueChange={(selectedValue)=>{
+                            const selected  = allocationStatusList.find((s)=> s.name === selectedValue);
+                            setAllocationstatus_id(selected);
+                        }}>
+
+                        <SelectTrigger className="w-full min-h-[50px]">
+                            <SelectValue placeholder="Select Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {allocationStatusList.map((status)=>(
+                                <SelectItem value={status.name} key={status.id}>{status.name}</SelectItem>
+                            ))}
+                        </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+
+
+
+
+                <div className="grid grid-cols-12 gap-4 mb-5">
+                    <div className="col-span-6">
+                        <Label htmlFor="textNote"> Note <i className="text-blue-500">(optional)</i> </Label>
+                    </div>
+                    <div className="col-span-6">
+                        <Textarea value={note} id="textNote" placeholder="Enter Note" onChange={(e)=>setNote(e.target.value)} />
+                    </div>
+                </div>
+
+
+
+                <div className="grid grid-cols-12 gap-4 mt-20">
+                    <div className="col-span-4">
+                        <Button type="button" onClick={refreshStates}>reset</Button>
+                    </div>
+                    <div className="col-span-4 flex justify-center items-center">
+                        <Button type="button" onClick={updateClassRoomAllocation}>Update</Button>
+                    </div>
+                    <div className="col-span-4 flex justify-end items-center">
+                        <Button type="button" onClick={saveClassRoomAllocation}>save</Button>
                     </div>
                 </div>
 

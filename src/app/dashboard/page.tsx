@@ -109,11 +109,11 @@ const Page = () => {
                 </div>
 
                 <div>
-                    <Link href="/dashboard/student">
+                    <Link href="/dashboard/classRoomAllocation">
                         <img src="/images/icons/student.png" alt="Student image"/>
                     </Link>
                     <br/>
-                    <p className="text-lg text-slate-700">Student Master</p>
+                    <p className="text-lg text-slate-700">Class Room Allocation Master</p>
                 </div>
 
 

@@ -50,11 +50,6 @@ export function getClassRoomAllocationColumns(
         },
 
         {
-            accessorKey: "name",
-            header: "Name",
-        },
-
-        {
             accessorKey: "starttime",
             header: "Start time",
         },
@@ -78,6 +73,11 @@ export function getClassRoomAllocationColumns(
         {
             accessorKey: "classoffering_id.classname",
             header: "Class Name",
+        },
+
+        {
+            accessorKey: "allocationstatus_id.name",
+            header: "Status",
         },
 
 

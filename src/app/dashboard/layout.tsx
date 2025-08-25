@@ -60,9 +60,7 @@ function Layout({children}  :any) {
                     <MenuItem setActive={setActive} active={active} item="Class">
                         <div className="flex flex-col space-y-4 text-sm">
                             <HoveredLink href="/dashboard/classhall">class hall</HoveredLink>
-                            <HoveredLink href="/individual">Individual</HoveredLink>
-                            <HoveredLink href="/team">Team</HoveredLink>
-                            <HoveredLink href="/enterprise">Enterprise</HoveredLink>
+                            <HoveredLink href="/dashboard/classRoomAllocation">Class Room Alllocation</HoveredLink>
                         </div>
                     </MenuItem>
 
