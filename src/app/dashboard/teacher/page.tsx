@@ -1,6 +1,11 @@
 "use client"
 import React, {useEffect, useState} from 'react'
-import {getAllTeachersService} from "@/services/teacherService";
+import {
+    deleteTeacherService,
+    getAllTeachersService,
+    saveTeacherService,
+    updateTeacherService
+} from "@/services/teacherService";
 import {DataTable} from "@/components/data-table";
 import {getTeacherColumns} from "@/app/dashboard/teacher/getTeacherColumns";
 import {TextGenerateEffect} from "@/components/ui/text-generate-effect";
@@ -16,6 +21,7 @@ import {Check, ChevronsUpDown} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {getAllBranchesService} from "@/services/branchService";
 import {getAllTeacherStatusService} from "@/services/teacherStatusService";
+import {toast} from "sonner";
 
 const Page = () => {
 
@@ -44,7 +50,6 @@ const Page = () => {
     const [teacherStatusList, setTeacherStatusList] = useState([]);
 
 
-
     const [branchCmbOpen, setBranchCmbOpen] = useState(false);
 
 
@@ -69,7 +74,6 @@ const Page = () => {
     }
 
 
-
     const getAllBranch = async () => {
         const serverResponse = await getAllBranchesService();
         setBranchList(serverResponse.data);
@@ -80,16 +84,203 @@ const Page = () => {
         setTeacherStatusList(serverResponse.data);
     }
 
-
-    const refillTeacher = () => {
-
+    const refreshStates = () => {
+        setId("");
+        setTeachernum("");
+        setFullname("");
+        setCallingname("");
+        setNic("");
+        setMobile("");
+        setLandno("")
+        setEmail("");
+        setAddress("");
+        setTeacherschool("")
+        setBirthdate("");
+        setGender("");
+        setAccountname("");
+        setAccountnumber("");
+        setQualificationsId(null);
+        setBranchId(null);
+        setTeacherstatus_id(null);
 
     }
-    const deleteTeacher = () => {
 
+
+    const refillTeacher = (obj:any) => {
+        setId(obj.id);
+        setTeachernum(obj.teachernum);
+        setFullname(obj.fullname);
+        setCallingname(obj.callingname);
+        setNic(obj.nic);
+        setMobile(obj.mobile);
+        setLandno(obj.landno);
+        setEmail(obj.email);
+        setAddress(obj.address);
+        setTeacherschool(obj.teacherschool);
+        setBirthdate(obj.birthdate);
+        setGender(obj.gender);
+        setAccountname(obj.accountname);
+        setAccountnumber(obj.accountnumber);
+        setQualificationsId(obj.qualifications_id);
+        setBranchId(obj.branch_id);
+        setTeacherstatus_id(obj.teacherstatus_id);
+
+    }
+    const deleteTeacher = async (obj) => {
+        const userConfirm = confirm(`Are You Sure To Add Following Teacher
+            \n Full Name is ${obj.fullname}
+            \n Calling Name is ${obj.callingname};
+            \n NIC is ${obj.nic}
+            `)
+        if (userConfirm) {
+            const serverResponse = await deleteTeacherService(obj);
+            if (serverResponse.data=="ok") {
+               toast.success("Teacher deleted successfully!");
+               getAllTeachers();
+               refreshStates();
+
+            }else {
+                toast.error("Something went wrong");
+            }
+
+        }
 
     }
     const printTeacher = () => {
+
+
+    }
+
+
+    const checkErrors = () => {
+        let errors = "";
+
+        if (fullname == "") {
+            errors = errors + "Full Name Cannot Be Empty \n"
+        }
+
+        if (callingname == "") {
+            errors = errors + "Calling Name Cannot Be Empty \n"
+        }
+
+        if (nic == "") {
+            errors = errors + "NIC Cannot Be Empty \n"
+        }
+
+        if (mobile == "") {
+            errors = errors + "Mobile Cannot Be Empty \n"
+        }
+
+        if (address == "") {
+            errors = errors + "Address Cannot Be Empty \n"
+        }
+
+        if (qualifications_id == null) {
+            errors = errors + "Qualifications Cannot Be Empty \n"
+        }
+
+        if (teacherschool == null) {
+            errors = errors + "Teachers school Cannot Be Empty \n"
+        }
+
+        if (birthdate == null) {
+            errors = errors + "Birthdate cannot be Empty \n"
+        }
+
+        if (gender == null) {
+            errors = errors + "Gender cannot be Empty \n"
+        }
+
+        if (accountname == null) {
+            errors = errors + "Account Name cannot be Empty \n"
+        }
+
+        if (accountnumber == null) {
+            errors = errors + "Account Number cannot be Empty \n"
+        }
+
+        if (branch_id == null) {
+            errors = errors + "Branch cannot be Empty \n"
+        }
+
+        if (teacherstatus_id == null) {
+            errors = errors + "Teacher status cannot be Empty \n"
+        }
+
+
+        return errors;
+    }
+
+
+    const addTeacher = async () => {
+        const saveObject = {
+            fullname,
+            callingname,
+            nic,
+            mobile,
+            landno,
+            email,
+            address,
+            qualifications_id,
+            teacherschool,
+            birthdate,
+            gender,
+            accountname,
+            accountnumber,
+            branch_id,
+            teacherstatus_id
+        };
+
+        let errors = checkErrors();
+
+        if (errors == "") {
+            const userConfirm = confirm(`Are You Sure To Add Following Teacher
+            \n Full Name is ${saveObject.fullname}
+            \n Calling Name is ${saveObject.callingname};
+            \n NIC is ${saveObject.nic}
+            `)
+            if (userConfirm) {
+                const serverResponse = await saveTeacherService(saveObject);
+                if (serverResponse.data == "ok") {
+                    toast.success("Teacher Added successfully!");
+                    refreshStates();
+                    getAllTeachers();
+                }
+            }
+
+
+        } else {
+            toast.error(`You Have Some Errors \n ${errors}`)
+        }
+    }
+
+
+    const updateTeacher = async () => {
+        const updateObject = {id,teachernum, fullname,callingname,nic,mobile,landno,email,address,teacherschool,birthdate,gender,accountname,accountnumber,qualifications_id,branch_id,teacherstatus_id,};
+
+
+        let errors = checkErrors();
+
+        if (errors == "") {
+            const userConfirm = confirm(`Are You Sure To Add Following Teacher
+            \n Full Name is ${updateObject.fullname}
+            \n Calling Name is ${updateObject.callingname};
+            \n NIC is ${updateObject.nic}
+            `)
+            if (userConfirm) {
+                const serverResponse = await updateTeacherService(updateObject);
+                if (serverResponse.data == "ok") {
+                    toast.success("Teacher updated succesfully");
+                    refreshStates();
+                    getAllTeachers();
+                }
+            }
+
+
+        } else {
+            toast.error(`You Have Some Errors \n ${errors}`)
+        }
+
 
 
     }
@@ -255,7 +446,7 @@ const Page = () => {
                         <Label htmlFor="textDOB"> Date Of Birth <i className="text-red-500">*</i> </Label>
                     </div>
                     <div className="col-span-6">
-                        <Input type="text" className="h-[50px]" id="textDOB" value={birthdate}
+                        <Input type="date" className="h-[50px]" id="textDOB" value={birthdate}
                                onChange={(e) => setBirthdate(e.target.value)}/>
                     </div>
 
@@ -319,23 +510,23 @@ const Page = () => {
                         <Popover open={branchCmbOpen} onOpenChange={setBranchCmbOpen}>
                             <PopoverTrigger asChild>
                                 <Button variant="outline" role="combobox" className="w-full justify-between h-[50px]">
-                                    {branch_id? branch_id.name + " ("+ branch_id.bank_id.name + ")" : "Select Branch"}
-                                        <ChevronsUpDown className="opacity-50"/>
-                                        </Button>
+                                    {branch_id ? branch_id.name + " (" + branch_id.bank_id.name + ")" : "Select Branch"}
+                                    <ChevronsUpDown className="opacity-50"/>
+                                </Button>
                             </PopoverTrigger>
                             <PopoverContent>
                                 <Command>
-                                    <CommandInput placeholder="Select Branch" />
+                                    <CommandInput placeholder="Select Branch"/>
                                     <CommandList>
                                         <CommandEmpty>NO Branch Found</CommandEmpty>
                                         <CommandGroup>
-                                            {branchList.map((branch:any,index:number) => (
+                                            {branchList.map((branch: any, index: number) => (
                                                 <CommandItem key={index} value={branch.name}
-                                                onSelect={()=>{
-                                                    setBranchId(branch_id?.id === branch.id ? null : branch)
-                                                }}
+                                                             onSelect={() => {
+                                                                 setBranchId(branch_id?.id === branch.id ? null : branch)
+                                                             }}
                                                 >
-                                                    {branch.name + " ("+ branch.bank_id.name + ")"}
+                                                    {branch.name + " (" + branch.bank_id.name + ")"}
                                                 </CommandItem>
                                             ))}
                                         </CommandGroup>
@@ -354,22 +545,35 @@ const Page = () => {
                         <Label htmlFor="selectStatus"> Status <i className="text-red-500">*</i> </Label>
                     </div>
                     <div className="col-span-6">
-                            <Select value={teacherstatus_id?.name ?? ''} onValueChange={(selectedValue)=>{
-                                const selected = teacherStatusList.find((t)=> t.name === selectedValue);
-                                setTeacherstatus_id(selected);
-                            }}>
-                                <SelectTrigger className="w-full min-h-[50px]">
-                                    <SelectValue placeholder="Select Teacher Status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {teacherStatusList.map((ts:any,index:number)=>(
-                                        <SelectItem value={ts.name} key={index}>{ts.name}</SelectItem>
-                                    ))}
-                                </SelectContent>
+                        <Select value={teacherstatus_id?.name ?? ''} onValueChange={(selectedValue) => {
+                            const selected = teacherStatusList.find((t) => t.name === selectedValue);
+                            setTeacherstatus_id(selected);
+                        }}>
+                            <SelectTrigger className="w-full min-h-[50px]">
+                                <SelectValue placeholder="Select Teacher Status"/>
+                            </SelectTrigger>
+                            <SelectContent>
+                                {teacherStatusList.map((ts: any, index: number) => (
+                                    <SelectItem value={ts.name} key={index}>{ts.name}</SelectItem>
+                                ))}
+                            </SelectContent>
 
-                            </Select>
+                        </Select>
                     </div>
 
+                </div>
+
+
+                <div className="grid grid-cols-12 gap-4 mt-20">
+                    <div className="col-span-4">
+                        <Button type="button" onClick={refreshStates}>reset</Button>
+                    </div>
+                    <div className="col-span-4 flex justify-center items-center">
+                        <Button type="button" onClick={updateTeacher}>Update</Button>
+                    </div>
+                    <div className="col-span-4 flex justify-end items-center">
+                        <Button type="button" onClick={addTeacher}>save</Button>
+                    </div>
                 </div>
 
 
