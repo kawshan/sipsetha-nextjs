@@ -17,11 +17,13 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Button} from "@/components/ui/button";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
-import {Check, ChevronsUpDown} from "lucide-react";
+import {Check, ChevronDownIcon, ChevronsUpDown} from "lucide-react";
 import {cn} from "@/lib/utils";
 import {getAllBranchesService} from "@/services/branchService";
 import {getAllTeacherStatusService} from "@/services/teacherStatusService";
 import {toast} from "sonner";
+import {Calendar} from "@/components/ui/calendar"
+
 
 const Page = () => {
 
@@ -35,7 +37,7 @@ const Page = () => {
     const [email, setEmail] = useState("");
     const [address, setAddress] = useState("");
     const [teacherschool, setTeacherschool] = useState("");
-    const [birthdate, setBirthdate] = useState("");
+    const [birthdate, setBirthdate] = useState<Date | undefined>(undefined);
     const [gender, setGender] = useState("");
     const [accountname, setAccountname] = useState("");
     const [accountnumber, setAccountnumber] = useState("");
@@ -51,6 +53,7 @@ const Page = () => {
 
 
     const [branchCmbOpen, setBranchCmbOpen] = useState(false);
+    const [dateCmbOpen, setDateCmbOpen] = useState(false);
 
 
     useEffect(() => {
@@ -95,7 +98,7 @@ const Page = () => {
         setEmail("");
         setAddress("");
         setTeacherschool("")
-        setBirthdate("");
+        setBirthdate(undefined);
         setGender("");
         setAccountname("");
         setAccountnumber("");
@@ -106,7 +109,7 @@ const Page = () => {
     }
 
 
-    const refillTeacher = (obj:any) => {
+    const refillTeacher = (obj: any) => {
         setId(obj.id);
         setTeachernum(obj.teachernum);
         setFullname(obj.fullname);
@@ -117,7 +120,7 @@ const Page = () => {
         setEmail(obj.email);
         setAddress(obj.address);
         setTeacherschool(obj.teacherschool);
-        setBirthdate(obj.birthdate);
+        setBirthdate(obj.birthdate ? new Date(obj.birthdate) : undefined);
         setGender(obj.gender);
         setAccountname(obj.accountname);
         setAccountnumber(obj.accountnumber);
@@ -126,7 +129,7 @@ const Page = () => {
         setTeacherstatus_id(obj.teacherstatus_id);
 
     }
-    const deleteTeacher = async (obj) => {
+    const deleteTeacher = async (obj:any) => {
         const userConfirm = confirm(`Are You Sure To Add Following Teacher
             \n Full Name is ${obj.fullname}
             \n Calling Name is ${obj.callingname};
@@ -134,12 +137,12 @@ const Page = () => {
             `)
         if (userConfirm) {
             const serverResponse = await deleteTeacherService(obj);
-            if (serverResponse.data=="ok") {
-               toast.success("Teacher deleted successfully!");
-               getAllTeachers();
-               refreshStates();
+            if (serverResponse.data == "ok") {
+                toast.success("Teacher deleted successfully!");
+                getAllTeachers();
+                refreshStates();
 
-            }else {
+            } else {
                 toast.error("Something went wrong");
             }
 
@@ -183,7 +186,7 @@ const Page = () => {
             errors = errors + "Teachers school Cannot Be Empty \n"
         }
 
-        if (birthdate == null) {
+        if (birthdate == undefined) {
             errors = errors + "Birthdate cannot be Empty \n"
         }
 
@@ -256,7 +259,25 @@ const Page = () => {
 
 
     const updateTeacher = async () => {
-        const updateObject = {id,teachernum, fullname,callingname,nic,mobile,landno,email,address,teacherschool,birthdate,gender,accountname,accountnumber,qualifications_id,branch_id,teacherstatus_id,};
+        const updateObject = {
+            id,
+            teachernum,
+            fullname,
+            callingname,
+            nic,
+            mobile,
+            landno,
+            email,
+            address,
+            teacherschool,
+            birthdate,
+            gender,
+            accountname,
+            accountnumber,
+            qualifications_id,
+            branch_id,
+            teacherstatus_id,
+        };
 
 
         let errors = checkErrors();
@@ -280,7 +301,6 @@ const Page = () => {
         } else {
             toast.error(`You Have Some Errors \n ${errors}`)
         }
-
 
 
     }
@@ -446,8 +466,28 @@ const Page = () => {
                         <Label htmlFor="textDOB"> Date Of Birth <i className="text-red-500">*</i> </Label>
                     </div>
                     <div className="col-span-6">
-                        <Input type="date" className="h-[50px]" id="textDOB" value={birthdate}
-                               onChange={(e) => setBirthdate(e.target.value)}/>
+                        {/*<Input type="date" className="h-[50px]" id="textDOB" value={birthdate}*/}
+                        {/*       onChange={(e) => setBirthdate(e.target.value)}/>*/}
+
+                        <Popover open={dateCmbOpen} onOpenChange={setDateCmbOpen}>
+                            <PopoverTrigger asChild>
+                                <Button variant="outline" className="w-70 justify-between h-[50px]">
+                                    {birthdate ? birthdate.toLocaleDateString() : "Select Birth Date"}
+                                    <ChevronDownIcon/>
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                                <Calendar
+                                mode="single" selected={birthdate} captionLayout="dropdown"
+                                onSelect={(date)=>{
+                                    setBirthdate(date);
+                                    setDateCmbOpen(false);
+                                }}
+                                />
+                            </PopoverContent>
+                        </Popover>
+
+
                     </div>
 
                 </div>
