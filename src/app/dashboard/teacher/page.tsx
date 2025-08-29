@@ -116,8 +116,8 @@ const Page = () => {
         setCallingname(obj.callingname);
         setNic(obj.nic);
         setMobile(obj.mobile);
-        setLandno(obj.landno);
-        setEmail(obj.email);
+        setLandno(obj.landno == null ? "" : obj.landno);
+        setEmail(obj.email == null ? "" : obj.email);
         setAddress(obj.address);
         setTeacherschool(obj.teacherschool);
         setBirthdate(obj.birthdate ? new Date(obj.birthdate) : undefined);
@@ -471,7 +471,7 @@ const Page = () => {
 
                         <Popover open={dateCmbOpen} onOpenChange={setDateCmbOpen}>
                             <PopoverTrigger asChild>
-                                <Button variant="outline" className="w-70 justify-between h-[50px]">
+                                <Button variant="outline" className="w-full justify-between h-[50px]">
                                     {birthdate ? birthdate.toLocaleDateString() : "Select Birth Date"}
                                     <ChevronDownIcon/>
                                 </Button>

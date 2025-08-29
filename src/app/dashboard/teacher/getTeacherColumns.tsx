@@ -81,6 +81,11 @@ export function getTeacherColumns(
         },
 
         {
+            accessorKey: "birthdate",
+            header: "Birth Date",
+        },
+
+        {
             accessorKey: "nic",
             header: "NIC",
         },
