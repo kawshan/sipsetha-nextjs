@@ -1,14 +1,54 @@
 "use client"
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {TextGenerateEffect} from "@/components/ui/text-generate-effect";
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
-import {Select} from "@/components/ui/select";
-import {Input} from "@/components/ui/input";
 import {Table,TableBody,TableCaption,TableCell,TableHead,TableHeader,TableRow,} from "@/components/ui/table"
+import {getAllTeachersService} from "@/services/teacherService";
+
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {Check, ChevronsUpDown} from "lucide-react";
+import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
+import {cn} from "@/lib/utils";
+import {Input} from "@/components/ui/input";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {getAllEnrollmentStatusService} from "@/services/enrollmentStausService";
 
 
 const Page = () => {
+
+    const [id,setId] = useState("");
+    const [enrolmentnum, setEnrolmentnum] = useState("");
+    const [note, setNote] = useState("");
+    const [addeddatetime, setAddeddatetime] = useState("");
+    const [modifydatetime, setModifydatetime] = useState("");
+    const [deletedatetime, setDeletedatetime] = useState("");
+    const [addeduser_id,setAddeduser_id] = useState(null);
+    const [modifyuser_id,setModifyuser_id] = useState(null);
+    const [deleteuser_id,setDeleteuser_id] = useState(null);
+    const [month,setMonth] = useState("");
+    const [totalclassincome,setTotalclassincome] = useState("");
+    const [totalservicecharge,setTotalservicecharge] = useState("");
+    const [totaladditionalcharge,setTotaladditionalcharge] = useState("");
+    const [totaltobepayed,setTotaltobepayed] = useState("");
+    const [payedamount,setPayedamount] = useState("");
+    const [enrolmentstatus_id,setEnrolmentstatus] = useState(null);
+    const [teacher_id,setTeacher_id] = useState(null);
+    const [classOfferings,setClassOfferings] = useState([]);
+
+    const [teacherList,setTeacherList] = useState([]);
+    const [enrollmentStatusList,setEnrollmentStatusList] = useState([]);
+
+
+
+    const [teacherCmbOpen, setTeacherCmbOpen] = useState(false);
+
+
+
+    useEffect(() => {
+        getAllTeacher();
+        getAllEnrollmentStatusList();
+    },[])
 
 
     const lblHeading = 'Teacher Enrollment Master';
@@ -26,6 +66,22 @@ const Page = () => {
     const saveEnrollment = () => {
 
     }
+
+
+    const getAllTeacher = async () => {
+        const serverResponse = await getAllTeachersService();
+        setTeacherList(serverResponse.data);
+
+    }
+
+
+    const getAllEnrollmentStatusList = async ()=>{
+        const serverResponse = await getAllEnrollmentStatusService();
+        setEnrollmentStatusList(serverResponse.data);
+
+    }
+
+
 
 
     return (
@@ -62,6 +118,40 @@ const Page = () => {
                     <div className="col-span-3">
                         <Label htmlFor="selectTeacher" className="text-lg">Teacher <i className="text-red-500">*</i>
                         </Label>
+                        <Popover open={teacherCmbOpen} onOpenChange={setTeacherCmbOpen}>
+                            <PopoverTrigger asChild>
+                                <Button variant="outline" role="combobox" className="min-w-full justify-start">
+                                    {teacher_id ? teacher_id.fullname : 'Select Teacher'}
+                                    <ChevronsUpDown className="opacity-50"/>
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[500px]">
+                                <Command>
+                                    <CommandInput placeholder="Search Teacher" />
+                                    <CommandList>
+                                        <CommandEmpty>NO Teacher Found</CommandEmpty>
+                                        <CommandGroup>
+                                            {teacherList.map((teacher:any,index:number)=>(
+                                                <CommandItem key={index} value={teacher.fullname}
+                                                onSelect={()=>{
+                                                    setTeacher_id(teacher_id?.id === teacher.id ? null :teacher)
+                                                    setTeacherCmbOpen(false)
+                                                }}
+                                                >
+                                                    {teacher.fullname}
+                                                    <Check className={cn(
+                                                        "ml-auto",
+                                                        teacher_id?.id === teacher.id ? "opacity-100" : "opacity-0",
+                                                    )}
+                                                           />
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+
                     </div>
 
 
@@ -161,7 +251,21 @@ const Page = () => {
                                     </TableCell>
 
                                     <TableCell>
-                                    {/*implement Select*/}
+                                        <Select value={enrolmentstatus_id?.name ?? ''} onValueChange={(selectedValue)=>{
+                                            const selected = enrollmentStatusList.find((enrl:any)=> enrl.name === selectedValue );
+                                            setEnrolmentstatus(selected);
+                                        }}>
+                                            <SelectTrigger className="w-full min-h-[50px]">
+                                                <SelectValue placeholder="Select Status" />
+                                            </SelectTrigger>
+
+                                            <SelectContent>
+                                                {enrollmentStatusList.map((es:any,index:number)=>(
+                                                    <SelectItem value={es.name} key={index}>{es.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+
+                                        </Select>
                                     </TableCell>
                                 </TableRow>
                                 {/*    second row end*/}
