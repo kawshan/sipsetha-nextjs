@@ -149,7 +149,7 @@ const Page = () => {
                 </div>
 
                 <div>
-                    <Link href="/dashboard/studentClassRegistration">
+                    <Link href="/dashboard/enrollment">
                         <img src="/images/icons/enrollment.png" alt="enrollment image"/>
                     </Link>
                     <br/>

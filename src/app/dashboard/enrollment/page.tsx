@@ -80,7 +80,7 @@ const Page = () => {
                                 {/*first row start*/}
                                 <TableRow>
                                     <TableCell className="border-2 border-slate-300">
-                                        <Label htmlFor="textTotalIncome" className="text-lg">Total Income <i
+                                        <Label htmlFor="textTotalIncome" className="text-lg">Total Class Income <i
                                             className="text-red-500">*</i> </Label>
                                     </TableCell>
 
@@ -97,7 +97,7 @@ const Page = () => {
                                 {/*second row start*/}
                                 <TableRow>
                                     <TableCell className="border-2 border-slate-300">
-                                        <Label htmlFor="textServiceCharge" className="text-lg">Service Charge <i
+                                        <Label htmlFor="textServiceCharge" className="text-lg">Total Service Charge <i
                                             className="text-red-500">*</i> </Label>
                                     </TableCell>
 
@@ -112,7 +112,7 @@ const Page = () => {
                                 {/*second row start*/}
                                 <TableRow>
                                     <TableCell className="border-2 border-slate-300">
-                                        <Label htmlFor="textServiceCharge" className="text-lg">Additional Charge <i
+                                        <Label htmlFor="textServiceCharge" className="text-lg">Total Additional Charge <i
                                             className="text-red-500">*</i> </Label>
                                     </TableCell>
 
@@ -126,7 +126,7 @@ const Page = () => {
                                 {/*second row start*/}
                                 <TableRow>
                                     <TableCell className="border-2 border-slate-300">
-                                        <Label htmlFor="textToBePayed" className="text-lg">To Be Payed <i
+                                        <Label htmlFor="textToBePayed" className="text-lg">Total To Be Payed <i
                                             className="text-red-500">*</i> </Label>
                                     </TableCell>
 
@@ -244,9 +244,9 @@ const Page = () => {
 
                                 <TableCell className="border-2 border-slate-300">
                                     <div className="space-x-1.5">
-                                        <Button type="button">reset</Button>
-                                        <Button type="button">Update</Button>
-                                        <Button type="button">save</Button>
+                                        <Button variant="secondary" type="button">reset</Button>
+                                        <Button variant="secondary" type="button">Update</Button>
+                                        <Button variant="secondary" type="button">save</Button>
                                     </div>
                                 </TableCell>
 
