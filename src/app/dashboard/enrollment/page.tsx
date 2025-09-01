@@ -36,7 +36,7 @@ const Page = () => {
     const [payedamount, setPayedamount] = useState("");
     const [enrolmentstatus_id, setEnrolmentstatus] = useState(null);
     const [teacher_id, setTeacher_id] = useState(null);
-    // let [classOfferings, setClassOfferings] = useState([]);
+    let [classOfferings, setClassOfferings] = useState<any[]>([]);
 
 
     // enrollment has class offering states
@@ -109,7 +109,6 @@ const Page = () => {
     }
 
 
-    let classOfferings = new Array();
 
 
 
@@ -180,7 +179,7 @@ const Page = () => {
             Class Fee is ${classfee}
             `);
             if (userConfirm) {
-                classOfferings.push(saveObject);
+                setClassOfferings([...classOfferings,saveObject]);
                 refreshInnerStates();
             }
 
