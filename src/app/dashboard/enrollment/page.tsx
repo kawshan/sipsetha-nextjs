@@ -13,6 +13,7 @@ import {cn} from "@/lib/utils";
 import {Input} from "@/components/ui/input";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {getAllEnrollmentStatusService} from "@/services/enrollmentStausService";
+import {getAllClassOfferingService} from "@/services/classOfferingService";
 
 
 const Page = () => {
@@ -36,18 +37,43 @@ const Page = () => {
     const [teacher_id,setTeacher_id] = useState(null);
     const [classOfferings,setClassOfferings] = useState([]);
 
+
+
+
+    // enrollment has class offering states
+    const [enrl_id,setEnrl_id] = useState(null);
+    const [classfee,setClassfee] = useState(null);
+    const [classincome,setClassincome] = useState(null);
+    const [regstudentcount,setRegstudentcount] = useState("");
+    const [payedcount,setPayedcount] = useState("");
+    const [freestudentscount,setFreestudentscount] = useState("");
+    const [servicecharge,setServicecharge] = useState("");
+    const [additionalcharge,setAdditionalcharge] = useState("");
+    const [enrolment_id,setEnrolment_id] = useState(null);
+    const [classoffering_id,setClassoffering_id] = useState(null);
+
+
+
+
+
+
+
+
     const [teacherList,setTeacherList] = useState([]);
     const [enrollmentStatusList,setEnrollmentStatusList] = useState([]);
+    const [classOfferingList,setClassOfferingList] = useState([]);
 
 
 
     const [teacherCmbOpen, setTeacherCmbOpen] = useState(false);
+    const [classOffCmbOpen, setClassOffCmbOpen] = useState(false);
 
 
 
     useEffect(() => {
         getAllTeacher();
         getAllEnrollmentStatusList();
+        getAllClassOfferings();
     },[])
 
 
@@ -79,6 +105,12 @@ const Page = () => {
         const serverResponse = await getAllEnrollmentStatusService();
         setEnrollmentStatusList(serverResponse.data);
 
+    }
+
+
+    const getAllClassOfferings = async () => {
+        const serverResponse = await getAllClassOfferingService();
+        setClassOfferingList(serverResponse.data);
     }
 
 
@@ -294,7 +326,39 @@ const Page = () => {
                                 <TableCell className="border-2 border-slate-300">
                                     <Label htmlFor="selectClassOffering" className="text-lg">Class Offering <i
                                         className="text-red-500">*</i> </Label>
-                                    <Input type="text" className="w-full h-[50px]" placeholder="Enter Class Offering" />
+                                        <Popover open={classOffCmbOpen} onOpenChange={setClassOffCmbOpen}>
+                                            <PopoverTrigger asChild>
+                                                    <Button variant="outline" role="combobox" className="w-full min-h-[50px]">
+                                                            {classoffering_id ? classoffering_id.classname : 'Select Class'}
+                                                        <ChevronsUpDown className="opacity-50" />
+                                                    </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent>
+                                                <Command>
+                                                    <CommandInput placeholder="Search Class Offering" />
+                                                    <CommandEmpty>NO Class Offering Found</CommandEmpty>
+                                                    <CommandGroup>
+                                                        {classOfferingList.map((cls:any,index:number)=>(
+                                                            <CommandItem value={cls.classname} key={index}
+                                                            onSelect={()=>{
+                                                                setClassoffering_id(classoffering_id?.id === cls.id ? null : cls);
+                                                                setClassOffCmbOpen(false);
+                                                            }}
+                                                            >
+                                                                {cls.classname}
+                                                                <Check
+                                                                className={cn(
+                                                                    "ml-auto",
+                                                                    classoffering_id?.id === cls.id ? "opacity-100" : "opacity-0",
+                                                                )}
+
+                                                                />
+                                                            </CommandItem>
+                                                        ))}
+                                                    </CommandGroup>
+                                                </Command>
+                                            </PopoverContent>
+                                        </Popover>
                                 </TableCell>
 
                                 <TableCell className="border-2 border-slate-300">
