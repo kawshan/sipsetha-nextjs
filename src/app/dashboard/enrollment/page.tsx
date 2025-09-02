@@ -204,6 +204,15 @@ const Page = () => {
     }
 
 
+
+
+    // INNER TABLE FUNCTIONS STARTS FROM HERE
+
+
+
+
+
+
     const refreshInnerStates = () => {
 
         setEnrl_id(null);
@@ -283,9 +292,18 @@ const Page = () => {
         } else {
             toast.info(`You Have Following Errors \n ${errors}`)
         }
-
-
     }
+
+
+
+    const deleteInner = (index:number) =>{
+        setClassOfferings(prev => prev.filter((_,i) => i !== index))
+    }
+
+
+
+
+
 
 
     return (
@@ -661,7 +679,7 @@ const Page = () => {
                                 <TableCell>
                                     <Button variant="secondary" className="w-[100px]" type="button">refill</Button>
                                     <Button variant="secondary" className="w-[100px]" type="button">Print</Button>
-                                    <Button variant="secondary" className="w-[100px]" type="button">Delete</Button>
+                                    <Button variant="secondary" className="w-[100px]" type="button" onClick={()=>deleteInner(index)}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         ))}
