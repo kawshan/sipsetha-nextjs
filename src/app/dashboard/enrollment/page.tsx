@@ -15,6 +15,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import {getAllEnrollmentStatusService} from "@/services/enrollmentStausService";
 import {getAllClassOfferingService} from "@/services/classOfferingService";
 import {toast} from "sonner";
+import {saveEnrollmentService} from "@/services/enrollmentService";
 
 
 const Page = () => {
@@ -36,7 +37,7 @@ const Page = () => {
     const [payedamount, setPayedamount] = useState("");
     const [enrolmentstatus_id, setEnrolmentstatus] = useState(null);
     const [teacher_id, setTeacher_id] = useState(null);
-    let [classOfferings, setClassOfferings] = useState<any[]>([]);
+    const [classOfferings, setClassOfferings] = useState<any[]>([]);
 
 
     // enrollment has class offering states
@@ -72,10 +73,26 @@ const Page = () => {
 
     const refreshStates = () => {
 
+        setId("");
+        setEnrolmentnum("");
+        setNote("");
+        setAddeddatetime("");
+        setModifydatetime("");
+        setDeletedatetime("");
+        setAddeduser_id(null);
+        setModifyuser_id(null);
+        setDeleteuser_id(null);
+        setMonth("");
+        setTotalclassincome("");
+        setTotalservicecharge("");
+        setTotaladditionalcharge("");
+        setTotaltobepayed("");
+        setPayedamount("");
+        setEnrolmentstatus(null);
+        setTeacher_id(null);
 
 
-
-
+        setClassOfferings([]);
     }
 
 
@@ -83,8 +100,86 @@ const Page = () => {
 
     }
 
+    const checkErrors = () => {
+        let errors = "";
 
-    const saveEnrollment = () => {
+        if (month == "") {
+            errors = errors + "Month cannot Be Empty \n"
+        }
+
+        if (totalclassincome == "") {
+            errors = errors + "Total Class Income Cannot Be Empty \n"
+        }
+
+        if (totalservicecharge == "") {
+            errors = errors + "Total Service charge cannot Be Empty \n"
+        }
+        if (totaladditionalcharge == "") {
+            errors = errors + "Total Additional charge cannot Be Empty \n"
+        }
+
+        if (totaltobepayed == "") {
+            errors = errors + "Total ToBePayed cannot Be Empty \n"
+        }
+
+        if (payedamount == "") {
+            errors = errors + "Total Payed amount cannot Be Empty \n"
+        }
+
+        if (enrolmentstatus_id == null) {
+            errors = errors + "Total Enrolment Status cannot Be Empty \n"
+        }
+
+        if (teacher_id == null) {
+            errors = errors + "Teacher cannot Be Empty \n"
+        }
+
+        if (classOfferings.length === 0) {
+            errors = errors + "ClassOfferings cannot Be Empty \n"
+        }
+
+
+        return errors;
+    }
+
+
+    const saveEnrollment = async () => {
+
+        const saveObject = {
+            note,
+            month,
+            totalclassincome,
+            totalservicecharge,
+            totaladditionalcharge,
+            totaltobepayed,
+            payedamount,
+            enrolmentstatus_id,
+            teacher_id,
+            classOfferings
+        };
+
+        let errors = checkErrors();
+        if (errors == "") {
+
+            const userConfirm = confirm(`Are You sure to add following details
+            Teacher is ${teacher_id?.fullname}
+            class offering is ${classoffering_id?.classname}
+            `);
+            if (userConfirm) {
+                const serverResponse = await saveEnrollmentService(saveObject);
+                if (serverResponse.data == "ok") {
+                    toast.success("Save Successful");
+                    refreshStates();
+                } else {
+                    toast.error(`Something Went wrong`);
+                }
+            }
+
+
+        } else {
+            toast.info(`you have some errors \n ${errors}`);
+        }
+
 
     }
 
@@ -109,11 +204,6 @@ const Page = () => {
     }
 
 
-
-
-
-
-
     const refreshInnerStates = () => {
 
         setEnrl_id(null);
@@ -130,36 +220,36 @@ const Page = () => {
     }
 
 
-    const checkErrorsInnerForm = ()=>{
+    const checkErrorsInnerForm = () => {
         let errors = "";
 
         if (classoffering_id == null) {
             errors = errors + "Class Offering Cannot Be Empty \n"
         }
 
-        if (classfee == ""){
+        if (classfee == "") {
             errors = errors + "Class Fee Cannot Be Empty \n"
         }
 
-        if (classincome == ""){
+        if (classincome == "") {
             errors = errors + "Class Income Cannot Be Empty \n"
         }
 
-        if (regstudentcount == ""){
+        if (regstudentcount == "") {
             errors = errors + "Reg Student Count Cannot Be Empty \n"
         }
 
-        if (payedcount == ""){
+        if (payedcount == "") {
             errors = errors + "Payed Count Cannot Be Empty \n"
         }
-        if (freestudentscount == ""){
+        if (freestudentscount == "") {
             errors = errors + "Free Student Count Cannot Be Empty \n"
         }
-        if (servicecharge == ""){
+        if (servicecharge == "") {
             errors = errors + "Service Charge Charge Cannot Be Empty \n"
         }
 
-        if (additionalcharge == ""){
+        if (additionalcharge == "") {
             errors = errors + "Additional Charge Cannot Be Empty \n"
         }
 
@@ -167,30 +257,35 @@ const Page = () => {
     }
 
 
-
-
-    const addInnerTable = ()=>{
-        const saveObject = {classfee,classincome,regstudentcount,payedcount,freestudentscount,servicecharge,additionalcharge,classoffering_id};
+    const addInnerTable = () => {
+        const saveObject = {
+            classfee,
+            classincome,
+            regstudentcount,
+            payedcount,
+            freestudentscount,
+            servicecharge,
+            additionalcharge,
+            classoffering_id
+        };
 
         let errors = checkErrorsInnerForm()
         if (errors == "") {
             const userConfirm = confirm(`Are You Sure Add Following details
-            Class Offering is ${classoffering_id? classoffering_id.classname : ""}
+            Class Offering is ${classoffering_id ? classoffering_id.classname : ""}
             Class Fee is ${classfee}
             `);
             if (userConfirm) {
-                setClassOfferings([...classOfferings,saveObject]);
+                setClassOfferings([...classOfferings, saveObject]);
                 refreshInnerStates();
             }
 
-        }else {
+        } else {
             toast.info(`You Have Following Errors \n ${errors}`)
         }
 
 
-
     }
-
 
 
     return (
@@ -269,7 +364,7 @@ const Page = () => {
 
                     <div className="col-span-3">
                         <Label htmlFor="selectMonth" className="text-lg">Month <i className="text-red-500">*</i></Label>
-                        <Input type="month" placeholder="Enter Month"/>
+                        <Input type="month" placeholder="Enter Month" value={month} onChange={(e)=>setMonth(e.target.value)} />
                     </div>
 
 
@@ -287,7 +382,8 @@ const Page = () => {
 
                                     <TableCell>
                                         <Input type="text" className="w-full h-[50px]"
-                                               placeholder="Enter Total Income"/>
+                                               placeholder="Enter Total Income" value={totalclassincome}
+                                               onChange={(e) => setTotalclassincome(e.target.value)}/>
                                     </TableCell>
                                 </TableRow>
                                 {/*    first row end*/}
@@ -302,7 +398,8 @@ const Page = () => {
 
                                     <TableCell>
                                         <Input type="text" className="w-full h-[50px]"
-                                               placeholder="Enter Service Charge"/>
+                                               placeholder="Enter Service Charge" value={totalservicecharge}
+                                               onChange={(e) => setTotalservicecharge(e.target.value)}/>
                                     </TableCell>
                                 </TableRow>
                                 {/*    second row end*/}
@@ -318,7 +415,8 @@ const Page = () => {
 
                                     <TableCell>
                                         <Input type="text" className="w-full h-[50px]"
-                                               placeholder="Enter Additional Charge"/>
+                                               placeholder="Enter Additional Charge" value={totaladditionalcharge}
+                                               onChange={(e) => setTotaladditionalcharge(e.target.value)}/>
                                     </TableCell>
                                 </TableRow>
                                 {/*    second row end*/}
@@ -332,7 +430,9 @@ const Page = () => {
                                     </TableCell>
 
                                     <TableCell>
-                                        <Input type="text" className="w-full h-[50px]" placeholder="Enter To Be Payed"/>
+                                        <Input type="text" className="w-full h-[50px]" placeholder="Enter To Be Payed"
+                                        value={totaltobepayed} onChange={(e) => setTotaltobepayed(e.target.value)}
+                                        />
                                     </TableCell>
                                 </TableRow>
                                 {/*    second row end*/}
@@ -346,7 +446,9 @@ const Page = () => {
                                     </TableCell>
 
                                     <TableCell>
-                                        <Input type="text" className="w-full h-[50px]" placeholder="Enter Payed Amout"/>
+                                        <Input type="text" className="w-full h-[50px]" placeholder="Enter Payed Amout"
+                                        value={payedamount} onChange={(e) => setPayedamount(e.target.value)}
+                                        />
                                     </TableCell>
                                 </TableRow>
                                 {/*    second row end*/}
@@ -440,7 +542,8 @@ const Page = () => {
                                     <Label htmlFor="textClassFee" className="text-lg">Class Fee <i
                                         className="text-red-500">*</i> </Label>
                                     <Input type="text" id="textClassFee" className="w-full h-[50px]"
-                                           placeholder="Enter Class Fee" value={classfee} onChange={(e)=>setClassfee(e.target.value)}/>
+                                           placeholder="Enter Class Fee" value={classfee}
+                                           onChange={(e) => setClassfee(e.target.value)}/>
                                 </TableCell>
 
 
@@ -448,7 +551,8 @@ const Page = () => {
                                     <Label htmlFor="textClassIncome" className="text-lg">Class Income <i
                                         className="text-red-500">*</i> </Label>
                                     <Input type="text" id="textClassIncome" className="w-full h-[50px]"
-                                           placeholder="Enter Class Income" value={classincome} onChange={(e)=>setClassincome(e.target.value)}/>
+                                           placeholder="Enter Class Income" value={classincome}
+                                           onChange={(e) => setClassincome(e.target.value)}/>
                                 </TableCell>
 
 
@@ -457,16 +561,11 @@ const Page = () => {
                                         count <i
                                             className="text-red-500">*</i> </Label>
                                     <Input type="text" id="textRegisteredStudentCount" className="w-full h-[50px]"
-                                           placeholder="Enter Registered Student Count" value={regstudentcount} onChange={(e)=> setRegstudentcount(e.target.value)}/>
+                                           placeholder="Enter Registered Student Count" value={regstudentcount}
+                                           onChange={(e) => setRegstudentcount(e.target.value)}/>
                                 </TableCell>
 
-                                <TableCell rowSpan={2} className="border-2 border-slate-300 w-[300px]">
-                                    <div className="space-x-1.5">
-                                        <Button variant="secondary" className="w-[100px]" type="button">reset</Button>
-                                        <Button variant="secondary" className="w-[100px]" type="button">Update</Button>
-                                        <Button variant="secondary" className="w-[100px]" type="button" onClick={addInnerTable}>Add</Button>
-                                    </div>
-                                </TableCell>
+                                <TableCell className="border-2 border-slate-300"></TableCell>
 
 
                             </TableRow>
@@ -478,14 +577,16 @@ const Page = () => {
                                     <Label htmlFor="textPayedCount" className="text-lg">Payed Count<i
                                         className="text-red-500">*</i> </Label>
                                     <Input type="text" id="textPayedCount" className="w-full h-[50px]"
-                                           placeholder="Enter Payed Count" value={payedcount} onChange={(e)=> setPayedcount(e.target.value)}/>
+                                           placeholder="Enter Payed Count" value={payedcount}
+                                           onChange={(e) => setPayedcount(e.target.value)}/>
                                 </TableCell>
 
                                 <TableCell className="border-2 border-slate-300">
                                     <Label htmlFor="textFreeStudentCount" className="text-lg">Free Student Count<i
                                         className="text-red-500">*</i> </Label>
                                     <Input type="text" id="textFreeStudentCount" className="w-full h-[50px]"
-                                           placeholder="Enter Free Student Count" value={freestudentscount} onChange={(e)=> setFreestudentscount(e.target.value)}/>
+                                           placeholder="Enter Free Student Count" value={freestudentscount}
+                                           onChange={(e) => setFreestudentscount(e.target.value)}/>
                                 </TableCell>
 
 
@@ -493,7 +594,8 @@ const Page = () => {
                                     <Label htmlFor="textServiceCharge" className="text-lg">Service Charge<i
                                         className="text-red-500">*</i> </Label>
                                     <Input type="text" id="textServiceCharge" className="w-full h-[50px]"
-                                           placeholder="Enter Service Charge" value={servicecharge} onChange={(e)=>setServicecharge(e.target.value)}/>
+                                           placeholder="Enter Service Charge" value={servicecharge}
+                                           onChange={(e) => setServicecharge(e.target.value)}/>
                                 </TableCell>
 
 
@@ -501,11 +603,18 @@ const Page = () => {
                                     <Label htmlFor="textAdditionalCharge" className="text-lg">Additional Charge<i
                                         className="text-red-500">*</i> </Label>
                                     <Input type="text" id="textAdditionalCharge" className="w-full h-[50px]"
-                                           placeholder="Enter Additional Charge" value={additionalcharge} onChange={(e)=>setAdditionalcharge(e.target.value)}/>
+                                           placeholder="Enter Additional Charge" value={additionalcharge}
+                                           onChange={(e) => setAdditionalcharge(e.target.value)}/>
                                 </TableCell>
 
-                                <TableCell> </TableCell>
-
+                                <TableCell className="border-2 border-slate-300 w-[300px]">
+                                    <div className="space-x-1.5">
+                                        <Button variant="secondary" className="w-[100px]" type="button">reset</Button>
+                                        <Button variant="secondary" className="w-[100px]" type="button">Update</Button>
+                                        <Button variant="secondary" className="w-[100px]" type="button"
+                                                onClick={addInnerTable}>Add</Button>
+                                    </div>
+                                </TableCell>
 
                             </TableRow>
 
@@ -514,7 +623,6 @@ const Page = () => {
                     </Table>
                 </div>
                 {/*    details area end*/}
-
 
 
             </div>
@@ -539,9 +647,9 @@ const Page = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {classOfferings.map((clsof:any,index:number)=>(
+                        {classOfferings.map((clsof: any, index: number) => (
                             <TableRow key={index}>
-                                <TableCell>{index+1}</TableCell>
+                                <TableCell>{index + 1}</TableCell>
                                 <TableCell>{clsof.classoffering_id.classname}</TableCell>
                                 <TableCell>{clsof.classfee}</TableCell>
                                 <TableCell>{clsof.classincome}</TableCell>
@@ -561,12 +669,6 @@ const Page = () => {
                 </Table>
             </div>
             {/*details table area end*/}
-
-
-
-
-
-
 
 
         </div>
