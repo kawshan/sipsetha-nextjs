@@ -62,6 +62,10 @@ const Page = () => {
     const [classOffCmbOpen, setClassOffCmbOpen] = useState(false);
 
 
+    const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
+
+
     useEffect(() => {
         getAllTeacher();
         getAllEnrollmentStatusList();
@@ -204,13 +208,7 @@ const Page = () => {
     }
 
 
-
-
     // INNER TABLE FUNCTIONS STARTS FROM HERE
-
-
-
-
 
 
     const refreshInnerStates = () => {
@@ -225,6 +223,8 @@ const Page = () => {
         setAdditionalcharge("")
         setEnrolment_id(null);
         setClassoffering_id(null);
+
+
 
     }
 
@@ -295,15 +295,59 @@ const Page = () => {
     }
 
 
-
-    const deleteInner = (index:number) =>{
-        setClassOfferings(prev => prev.filter((_,i) => i !== index))
+    const deleteInner = (index: number) => {
+        setClassOfferings(prev => prev.filter((_, i) => i !== index))
     }
 
 
+    const refillInner = (obj: any, index: number) => {
+        setClassfee(obj.classfee);
+        setClassincome(obj.classincome);
+        setRegstudentcount(obj.regstudentcount);
+        setPayedcount(obj.payedcount);
+        setFreestudentscount(obj.freestudentscount);
+        setServicecharge(obj.servicecharge);
+        setAdditionalcharge(obj.additionalcharge);
+        setEnrolment_id(obj.enrolment_id);
+        setClassoffering_id(obj.classoffering_id);
 
 
+        setEditingIndex(index); // remember which row we’re editing
+    }
 
+
+    const updateInner = () => {
+        if (editingIndex === null) return; // no row selected
+
+        const updateObj = {
+            classfee,
+            classincome,
+            regstudentcount,
+            payedcount,
+            freestudentscount,
+            servicecharge,
+            additionalcharge,
+            classoffering_id
+        };
+
+        let errors = checkErrorsInnerForm();
+        if (errors === "") {
+            const userConfirm = confirm(`Are You Sure Update Following details
+Class Offering is ${classoffering_id ? classoffering_id.classname : ""}
+Class Fee is ${classfee}`);
+            if (userConfirm) {
+                setClassOfferings(prev => {
+                    const newArr = [...prev];
+                    newArr[editingIndex] = updateObj; // replace row
+                    return newArr;
+                });
+                refreshInnerStates();
+                setEditingIndex(null); // clear edit mode
+            }
+        } else {
+            toast.info(`You Have Following Errors \n ${errors}`);
+        }
+    };
 
 
     return (
@@ -382,7 +426,8 @@ const Page = () => {
 
                     <div className="col-span-3">
                         <Label htmlFor="selectMonth" className="text-lg">Month <i className="text-red-500">*</i></Label>
-                        <Input type="month" placeholder="Enter Month" value={month} onChange={(e)=>setMonth(e.target.value)} />
+                        <Input type="month" placeholder="Enter Month" value={month}
+                               onChange={(e) => setMonth(e.target.value)}/>
                     </div>
 
 
@@ -449,7 +494,8 @@ const Page = () => {
 
                                     <TableCell>
                                         <Input type="text" className="w-full h-[50px]" placeholder="Enter To Be Payed"
-                                        value={totaltobepayed} onChange={(e) => setTotaltobepayed(e.target.value)}
+                                               value={totaltobepayed}
+                                               onChange={(e) => setTotaltobepayed(e.target.value)}
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -465,7 +511,7 @@ const Page = () => {
 
                                     <TableCell>
                                         <Input type="text" className="w-full h-[50px]" placeholder="Enter Payed Amout"
-                                        value={payedamount} onChange={(e) => setPayedamount(e.target.value)}
+                                               value={payedamount} onChange={(e) => setPayedamount(e.target.value)}
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -628,7 +674,7 @@ const Page = () => {
                                 <TableCell className="border-2 border-slate-300 w-[300px]">
                                     <div className="space-x-1.5">
                                         <Button variant="secondary" className="w-[100px]" type="button">reset</Button>
-                                        <Button variant="secondary" className="w-[100px]" type="button">Update</Button>
+                                        <Button variant="secondary" className="w-[100px]" type="button" onClick={updateInner}>Update</Button>
                                         <Button variant="secondary" className="w-[100px]" type="button"
                                                 onClick={addInnerTable}>Add</Button>
                                     </div>
@@ -677,9 +723,11 @@ const Page = () => {
                                 <TableCell>{clsof.servicecharge}</TableCell>
                                 <TableCell>{clsof.additionalcharge}</TableCell>
                                 <TableCell>
-                                    <Button variant="secondary" className="w-[100px]" type="button">refill</Button>
+                                    <Button variant="secondary" className="w-[100px]" type="button"
+                                            onClick={() => refillInner(clsof,index)}>refill</Button>
                                     <Button variant="secondary" className="w-[100px]" type="button">Print</Button>
-                                    <Button variant="secondary" className="w-[100px]" type="button" onClick={()=>deleteInner(index)}>Delete</Button>
+                                    <Button variant="secondary" className="w-[100px]" type="button"
+                                            onClick={() => deleteInner(index)}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         ))}
