@@ -477,7 +477,7 @@ Class Fee is ${classfee}`);
                 <div className="">
                     <Collapsible>
                         <CollapsibleTrigger
-                            className="rounded-full bg-gray-100 p-1 border-2 border-black mb-5">Enrollments</CollapsibleTrigger>
+                            className="rounded-full bg-gray-100 p-1 border-2 border-black mb-5 dark:bg-stone-950 dark:text-white dark:border-red-600">Enrollments</CollapsibleTrigger>
                         <CollapsibleContent>
                             <DataTable
                                 columns={getEnrollmentColumns(refillEnrollment, deleteEnrollment, printEnrollment)}
@@ -559,12 +559,12 @@ Class Fee is ${classfee}`);
 
                     <div className="col-span-6 flex justify-end items-end gap-4">
 
-                        <Table className="border-2 border-slate-300">
+                        <Table className="border-2 border-slate-300 dark:border-stone-950">
                             <TableBody>
 
                                 {/*first row start*/}
                                 <TableRow>
-                                    <TableCell className="border-2 border-slate-300">
+                                    <TableCell className="border-2 border-slate-300 dark:border-stone-950">
                                         <Label htmlFor="textTotalIncome" className="text-lg">Total Class Income <i
                                             className="text-red-500">*</i> </Label>
                                     </TableCell>
@@ -580,7 +580,7 @@ Class Fee is ${classfee}`);
 
                                 {/*second row start*/}
                                 <TableRow>
-                                    <TableCell className="border-2 border-slate-300">
+                                    <TableCell className="border-2 border-slate-300 dark:border-stone-950">
                                         <Label htmlFor="textServiceCharge" className="text-lg">Total Service Charge <i
                                             className="text-red-500">*</i> </Label>
                                     </TableCell>
@@ -596,7 +596,7 @@ Class Fee is ${classfee}`);
 
                                 {/*second row start*/}
                                 <TableRow>
-                                    <TableCell className="border-2 border-slate-300">
+                                    <TableCell className="border-2 border-slate-300 dark:border-stone-950">
                                         <Label htmlFor="textServiceCharge" className="text-lg">Total Additional
                                             Charge <i
                                                 className="text-red-500">*</i> </Label>
@@ -613,7 +613,7 @@ Class Fee is ${classfee}`);
 
                                 {/*second row start*/}
                                 <TableRow>
-                                    <TableCell className="border-2 border-slate-300">
+                                    <TableCell className="border-2 border-slate-300 dark:border-stone-950">
                                         <Label htmlFor="textToBePayed" className="text-lg">Total To Be Payed <i
                                             className="text-red-500">*</i> </Label>
                                     </TableCell>
@@ -630,7 +630,7 @@ Class Fee is ${classfee}`);
 
                                 {/*second row start*/}
                                 <TableRow>
-                                    <TableCell className="border-2 border-slate-300">
+                                    <TableCell className="border-2 border-slate-300 dark:border-stone-950">
                                         <Label htmlFor="textPayedAmout" className="text-lg">Payed Amount <i
                                             className="text-red-500">*</i> </Label>
                                     </TableCell>
@@ -646,7 +646,7 @@ Class Fee is ${classfee}`);
 
                                 {/*second row start*/}
                                 <TableRow>
-                                    <TableCell className="border-2 border-slate-300">
+                                    <TableCell className="border-2 border-slate-300 dark:border-stone-950">
                                         <Label htmlFor="selectStatus" className="text-lg">Enrollment Status <i
                                             className="text-red-500">*</i> </Label>
                                     </TableCell>
@@ -689,7 +689,7 @@ Class Fee is ${classfee}`);
                         <TableBody>
 
                             <TableRow>
-                                <TableCell className="border-2 border-slate-300">
+                                <TableCell className="border-2 border-slate-300 dark:border-stone-950">
                                     <Label htmlFor="selectClassOffering" className="text-lg">Class Offering <i
                                         className="text-red-500">*</i> </Label>
                                     <Popover open={classOffCmbOpen} onOpenChange={setClassOffCmbOpen}>
@@ -728,7 +728,7 @@ Class Fee is ${classfee}`);
                                     </Popover>
                                 </TableCell>
 
-                                <TableCell className="border-2 border-slate-300">
+                                <TableCell className="border-2 border-slate-300 dark:border-stone-950">
                                     <Label htmlFor="textClassFee" className="text-lg">Class Fee <i
                                         className="text-red-500">*</i> </Label>
                                     <Input type="text" id="textClassFee" className="w-full h-[50px]"
@@ -737,7 +737,7 @@ Class Fee is ${classfee}`);
                                 </TableCell>
 
 
-                                <TableCell className="border-2 border-slate-300">
+                                <TableCell className="border-2 border-slate-300 dark:border-stone-950">
                                     <Label htmlFor="textClassIncome" className="text-lg">Class Income <i
                                         className="text-red-500">*</i> </Label>
                                     <Input type="text" id="textClassIncome" className="w-full h-[50px]"
@@ -746,7 +746,7 @@ Class Fee is ${classfee}`);
                                 </TableCell>
 
 
-                                <TableCell className="border-2 border-slate-300">
+                                <TableCell className="border-2 border-slate-300 dark:border-stone-950">
                                     <Label htmlFor="textRegisteredStudentCount" className="text-lg">Registered Student
                                         count <i
                                             className="text-red-500">*</i> </Label>
@@ -755,7 +755,7 @@ Class Fee is ${classfee}`);
                                            onChange={(e) => setRegstudentcount(e.target.value)}/>
                                 </TableCell>
 
-                                <TableCell className="border-2 border-slate-300"></TableCell>
+                                <TableCell className="border-2 border-slate-300 dark:border-stone-950"></TableCell>
 
 
                             </TableRow>
@@ -763,7 +763,7 @@ Class Fee is ${classfee}`);
 
                             <TableRow>
 
-                                <TableCell className="border-2 border-slate-300 w-[500px]">
+                                <TableCell className="border-2 border-slate-300 w-[500px] dark:border-stone-950">
                                     <Label htmlFor="textPayedCount" className="text-lg">Payed Count<i
                                         className="text-red-500">*</i> </Label>
                                     <Input type="text" id="textPayedCount" className="w-full h-[50px]"
@@ -771,7 +771,7 @@ Class Fee is ${classfee}`);
                                            onChange={(e) => setPayedcount(e.target.value)}/>
                                 </TableCell>
 
-                                <TableCell className="border-2 border-slate-300">
+                                <TableCell className="border-2 border-slate-300 dark:border-stone-950">
                                     <Label htmlFor="textFreeStudentCount" className="text-lg">Free Student Count<i
                                         className="text-red-500">*</i> </Label>
                                     <Input type="text" id="textFreeStudentCount" className="w-full h-[50px]"
@@ -780,7 +780,7 @@ Class Fee is ${classfee}`);
                                 </TableCell>
 
 
-                                <TableCell className="border-2 border-slate-300">
+                                <TableCell className="border-2 border-slate-300 dark:border-stone-950">
                                     <Label htmlFor="textServiceCharge" className="text-lg">Service Charge<i
                                         className="text-red-500">*</i> </Label>
                                     <Input type="text" id="textServiceCharge" className="w-full h-[50px]"
@@ -789,7 +789,7 @@ Class Fee is ${classfee}`);
                                 </TableCell>
 
 
-                                <TableCell className="border-2 border-slate-300">
+                                <TableCell className="border-2 border-slate-300 dark:border-stone-950">
                                     <Label htmlFor="textAdditionalCharge" className="text-lg">Additional Charge<i
                                         className="text-red-500">*</i> </Label>
                                     <Input type="text" id="textAdditionalCharge" className="w-full h-[50px]"
@@ -797,7 +797,7 @@ Class Fee is ${classfee}`);
                                            onChange={(e) => setAdditionalcharge(e.target.value)}/>
                                 </TableCell>
 
-                                <TableCell className="border-2 border-slate-300 w-[300px]">
+                                <TableCell className="border-2 border-slate-300 w-[300px] dark:border-stone-950">
                                     <div className="space-x-1.5">
                                         <Button variant="secondary" className="w-[100px]" type="button">reset</Button>
                                         <Button variant="secondary" className="w-[100px]" type="button"
@@ -823,7 +823,7 @@ Class Fee is ${classfee}`);
             <div className="ml-9 mr-9  pb-20">
                 <Table>
                     <TableCaption>Details table</TableCaption>
-                    <TableHeader className="bg-slate-100">
+                    <TableHeader className="bg-slate-100 dark:bg-stone-950">
                         <TableRow>
                             <TableHead>#</TableHead>
                             <TableHead>Class Offering Name</TableHead>
