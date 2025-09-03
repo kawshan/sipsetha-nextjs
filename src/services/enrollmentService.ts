@@ -15,5 +15,7 @@ export function updateEnrollmentService(enrollment:any){
 }
 
 
-
+export function deleteEnrollmentService(enrollment:any){
+    return axios.delete(`${baseURL}/enrolment`,{data:enrollment})
+}
 

@@ -15,13 +15,20 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import {getAllEnrollmentStatusService} from "@/services/enrollmentStausService";
 import {getAllClassOfferingService} from "@/services/classOfferingService";
 import {toast} from "sonner";
-import {saveEnrollmentService, updateEnrollmentService} from "@/services/enrollmentService";
+import {
+    deleteEnrollmentService,
+    getAllEnrollmentService,
+    saveEnrollmentService,
+    updateEnrollmentService
+} from "@/services/enrollmentService";
 
 import {
     Collapsible,
     CollapsibleContent,
     CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import {DataTable} from "@/components/data-table";
+import {getEnrollmentColumns} from "@/app/dashboard/enrollment/enrollmentColumns";
 
 
 const Page = () => {
@@ -63,6 +70,8 @@ const Page = () => {
     const [enrollmentStatusList, setEnrollmentStatusList] = useState([]);
     const [classOfferingList, setClassOfferingList] = useState([]);
 
+    const [enrollmentList,setEnrollmentList] = useState([]);
+
 
     const [teacherCmbOpen, setTeacherCmbOpen] = useState(false);
     const [classOffCmbOpen, setClassOffCmbOpen] = useState(false);
@@ -72,6 +81,7 @@ const Page = () => {
 
 
     useEffect(() => {
+        getAllEnrollmentList();
         getAllTeacher();
         getAllEnrollmentStatusList();
         getAllClassOfferings();
@@ -79,6 +89,12 @@ const Page = () => {
 
 
     const lblHeading = 'Teacher Enrollment Master';
+
+
+    const getAllEnrollmentList = async () => {
+        const serverResponse = await getAllEnrollmentService();
+        setEnrollmentList(serverResponse.data)
+    }
 
 
     const getAllTeacher = async () => {
@@ -169,6 +185,7 @@ const Page = () => {
     }
 
 
+
     const saveEnrollment = async () => {
 
         const saveObject = {
@@ -203,37 +220,63 @@ const Page = () => {
 
 
         } else {
-            toast.info(`you have some errors \n ${errors}`);
+            toast.info(`you have some errors ${errors}`);
         }
 
 
     }
 
 
-    const refillEnrollment = (obj: object) => {
-        setId(obj.id);
-        setEnrolmentnum(obj.enrolmentnum);
-        setNote(obj.note == null ? "" : obj.note);
-        setAddeddatetime(obj.addeddatetime);
-        setModifydatetime(obj.modifydatetime);
-        setDeletedatetime(obj.deletedatetime);
-        setAddeduser_id(obj.addeduser_id);
-        setModifyuser_id(obj.modifyuser_id);
-        setDeleteuser_id(obj.deleteuser_id);
-        setMonth(obj.month);
-        setTotalclassincome(obj.totalclassincome);
-        setServicecharge(obj.totalservicecharge);
-        setTotaladditionalcharge(obj.totalservicecharge);
-        setTotaltobepayed(obj.totaltobepayed);
-        setPayedamount(obj.payedamount);
-        setEnrolmentstatus(obj.enrolmentstatus_id);
-        setTeacher_id(obj.teacher_id);
-        setClassOfferings(obj.classOfferings);
+    const refillEnrollment = (obj: any) => {
+
+        setId(obj.id)
+        setEnrolmentnum(obj.enrolmentnum)
+        setNote(obj.note)
+        setAddeddatetime(obj.addeddatetime)
+        setModifydatetime(obj.modifydatetime)
+        setDeletedatetime(obj.deletedatetime)
+        setAddeduser_id(obj.addeduser_id)
+        setModifyuser_id(obj.modifyuser_id)
+        setDeleteuser_id(obj.deleteuser_id)
+        setMonth(obj.month)
+        setTotalclassincome(obj.totalclassincome)
+        setTotalservicecharge(obj.totalservicecharge)
+        setTotaladditionalcharge(obj.totaladditionalcharge)
+        setTotaltobepayed(obj.totaltobepayed)
+        setPayedamount(obj.payedamount)
+        setEnrolmentstatus(obj.enrolmentstatus_id)
+        setTeacher_id(obj.teacher_id)
+        setClassOfferings(obj.classOfferings)
+
+
     }
 
 
+    const deleteEnrollment = async (obj:any) => {
+        const userConfirm = confirm(`Are you sure to delete`);
+        if (userConfirm) {
+            const serverResponse = await deleteEnrollmentService(obj);
+            if (serverResponse.data == "ok") {
+                toast.success("Delete Successful");
+                refreshStates();
+                getAllEnrollmentList();
+            }else {
+                toast.error(`Something Went wrong`);
+            }
+        }
+
+    }
+
+
+    const printEnrollment = (obj:any) => {
+
+
+    }
+
+
+
     const updateEnrollment = async () => {
-        const updateObject = {
+        let updateObject = {
             id,
             enrolmentnum,
             note,
@@ -257,19 +300,23 @@ const Page = () => {
         const errors = checkErrors();
         if (errors == "") {
             const userConfirm = confirm(`Are You sure to add following details
-            Teacher is ${teacher_id?.fullname}
-            class offering is ${classoffering_id?.classname}
+            Enrolment key is ${updateObject.id}
+            Enrolment code is  is ${updateObject.enrolmentnum}
             `);
 
             if (userConfirm) {
                 const serverResponse = await updateEnrollmentService(updateObject);
                 if (serverResponse.data == "ok") {
-                    toast.success("Save Successful");
+                    console.log(serverResponse.data);
+                    toast.success("Update Successful");
                     refreshStates();
+                    getAllEnrollmentList();
                 } else {
                     toast.error(`Something Went wrong`);
                 }
             }
+        }else {
+            toast.info(`you have some errors \n ${errors}`);
         }
     }
 
@@ -429,10 +476,12 @@ Class Fee is ${classfee}`);
 
                 <div className="">
                     <Collapsible>
-                        <CollapsibleTrigger className="rounded-full bg-gray-100 p-1 border-2 border-black   ">Enrollments</CollapsibleTrigger>
+                        <CollapsibleTrigger
+                            className="rounded-full bg-gray-100 p-1 border-2 border-black mb-5">Enrollments</CollapsibleTrigger>
                         <CollapsibleContent>
-                            Yes. Free to use for personal and commercial projects. No attribution
-                            required.
+                            <DataTable
+                                columns={getEnrollmentColumns(refillEnrollment, deleteEnrollment, printEnrollment)}
+                                data={enrollmentList}/>
                         </CollapsibleContent>
                     </Collapsible>
                 </div>
@@ -771,7 +820,7 @@ Class Fee is ${classfee}`);
             {/*form area end*/}
 
             {/*details table area start*/}
-            <div className="ml-9 mr-9">
+            <div className="ml-9 mr-9  pb-20">
                 <Table>
                     <TableCaption>Details table</TableCaption>
                     <TableHeader className="bg-slate-100">
