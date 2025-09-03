@@ -17,6 +17,12 @@ import {getAllClassOfferingService} from "@/services/classOfferingService";
 import {toast} from "sonner";
 import {saveEnrollmentService, updateEnrollmentService} from "@/services/enrollmentService";
 
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+
 
 const Page = () => {
 
@@ -419,6 +425,18 @@ Class Fee is ${classfee}`);
 
             {/*form area start*/}
             <div className="p-9">
+
+
+                <div className="">
+                    <Collapsible>
+                        <CollapsibleTrigger className="rounded-full bg-gray-100 p-1 border-2 border-black   ">Enrollments</CollapsibleTrigger>
+                        <CollapsibleContent>
+                            Yes. Free to use for personal and commercial projects. No attribution
+                            required.
+                        </CollapsibleContent>
+                    </Collapsible>
+                </div>
+
 
                 {/*header button start*/}
                 <div className="grid grid-cols-12 gap-4 mt-5">
