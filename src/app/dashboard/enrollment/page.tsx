@@ -15,7 +15,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import {getAllEnrollmentStatusService} from "@/services/enrollmentStausService";
 import {getAllClassOfferingService} from "@/services/classOfferingService";
 import {toast} from "sonner";
-import {saveEnrollmentService} from "@/services/enrollmentService";
+import {saveEnrollmentService, updateEnrollmentService} from "@/services/enrollmentService";
 
 
 const Page = () => {
@@ -65,7 +65,6 @@ const Page = () => {
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
 
-
     useEffect(() => {
         getAllTeacher();
         getAllEnrollmentStatusList();
@@ -74,6 +73,27 @@ const Page = () => {
 
 
     const lblHeading = 'Teacher Enrollment Master';
+
+
+    const getAllTeacher = async () => {
+        const serverResponse = await getAllTeachersService();
+        setTeacherList(serverResponse.data);
+
+    }
+
+
+    const getAllEnrollmentStatusList = async () => {
+        const serverResponse = await getAllEnrollmentStatusService();
+        setEnrollmentStatusList(serverResponse.data);
+
+    }
+
+
+    const getAllClassOfferings = async () => {
+        const serverResponse = await getAllClassOfferingService();
+        setClassOfferingList(serverResponse.data);
+    }
+
 
     const refreshStates = () => {
 
@@ -99,10 +119,6 @@ const Page = () => {
         setClassOfferings([]);
     }
 
-
-    const updateEnrollment = () => {
-
-    }
 
     const checkErrors = () => {
         let errors = "";
@@ -188,23 +204,67 @@ const Page = () => {
     }
 
 
-    const getAllTeacher = async () => {
-        const serverResponse = await getAllTeachersService();
-        setTeacherList(serverResponse.data);
-
+    const refillEnrollment = (obj: object) => {
+        setId(obj.id);
+        setEnrolmentnum(obj.enrolmentnum);
+        setNote(obj.note == null ? "" : obj.note);
+        setAddeddatetime(obj.addeddatetime);
+        setModifydatetime(obj.modifydatetime);
+        setDeletedatetime(obj.deletedatetime);
+        setAddeduser_id(obj.addeduser_id);
+        setModifyuser_id(obj.modifyuser_id);
+        setDeleteuser_id(obj.deleteuser_id);
+        setMonth(obj.month);
+        setTotalclassincome(obj.totalclassincome);
+        setServicecharge(obj.totalservicecharge);
+        setTotaladditionalcharge(obj.totalservicecharge);
+        setTotaltobepayed(obj.totaltobepayed);
+        setPayedamount(obj.payedamount);
+        setEnrolmentstatus(obj.enrolmentstatus_id);
+        setTeacher_id(obj.teacher_id);
+        setClassOfferings(obj.classOfferings);
     }
 
 
-    const getAllEnrollmentStatusList = async () => {
-        const serverResponse = await getAllEnrollmentStatusService();
-        setEnrollmentStatusList(serverResponse.data);
+    const updateEnrollment = async () => {
+        const updateObject = {
+            id,
+            enrolmentnum,
+            note,
+            addeddatetime,
+            modifydatetime,
+            deletedatetime,
+            addeduser_id,
+            modifyuser_id,
+            deleteuser_id,
+            month,
+            totalclassincome,
+            totalservicecharge,
+            totaladditionalcharge,
+            totaltobepayed,
+            payedamount,
+            enrolmentstatus_id,
+            teacher_id,
+            classOfferings
+        }
 
-    }
+        const errors = checkErrors();
+        if (errors == "") {
+            const userConfirm = confirm(`Are You sure to add following details
+            Teacher is ${teacher_id?.fullname}
+            class offering is ${classoffering_id?.classname}
+            `);
 
-
-    const getAllClassOfferings = async () => {
-        const serverResponse = await getAllClassOfferingService();
-        setClassOfferingList(serverResponse.data);
+            if (userConfirm) {
+                const serverResponse = await updateEnrollmentService(updateObject);
+                if (serverResponse.data == "ok") {
+                    toast.success("Save Successful");
+                    refreshStates();
+                } else {
+                    toast.error(`Something Went wrong`);
+                }
+            }
+        }
     }
 
 
@@ -223,7 +283,6 @@ const Page = () => {
         setAdditionalcharge("")
         setEnrolment_id(null);
         setClassoffering_id(null);
-
 
 
     }
@@ -674,7 +733,8 @@ Class Fee is ${classfee}`);
                                 <TableCell className="border-2 border-slate-300 w-[300px]">
                                     <div className="space-x-1.5">
                                         <Button variant="secondary" className="w-[100px]" type="button">reset</Button>
-                                        <Button variant="secondary" className="w-[100px]" type="button" onClick={updateInner}>Update</Button>
+                                        <Button variant="secondary" className="w-[100px]" type="button"
+                                                onClick={updateInner}>Update</Button>
                                         <Button variant="secondary" className="w-[100px]" type="button"
                                                 onClick={addInnerTable}>Add</Button>
                                     </div>
@@ -724,7 +784,7 @@ Class Fee is ${classfee}`);
                                 <TableCell>{clsof.additionalcharge}</TableCell>
                                 <TableCell>
                                     <Button variant="secondary" className="w-[100px]" type="button"
-                                            onClick={() => refillInner(clsof,index)}>refill</Button>
+                                            onClick={() => refillInner(clsof, index)}>refill</Button>
                                     <Button variant="secondary" className="w-[100px]" type="button">Print</Button>
                                     <Button variant="secondary" className="w-[100px]" type="button"
                                             onClick={() => deleteInner(index)}>Delete</Button>

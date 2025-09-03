@@ -10,4 +10,10 @@ export function saveEnrollmentService(enrollment:any){
 }
 
 
+export function updateEnrollmentService(enrollment:any){
+    return axios.put(`${baseURL}/enrolment`,enrollment)
+}
+
+
+
 
