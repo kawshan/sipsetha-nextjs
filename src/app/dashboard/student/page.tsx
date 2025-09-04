@@ -1,5 +1,5 @@
 "use client"
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import {TextGenerateEffect} from "@/components/ui/text-generate-effect";
 import {
     Dialog,
@@ -42,6 +42,18 @@ import {
 import {Check, ChevronsUpDown} from "lucide-react";
 import {cn} from "@/lib/utils";
 
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+
+import { useReactToPrint } from "react-to-print";
+
 
 const Page = () => {
 
@@ -66,6 +78,15 @@ const Page = () => {
     const [studentList, setStudentList] = useState([]);
 
     const [open, setOpen] = useState(false);
+
+
+    const contentRef = useRef<HTMLDivElement>(null);
+
+    const printAllStudents = useReactToPrint({contentRef})
+
+
+
+
 
     const lblHeading = `Student Management Master`;
 
@@ -263,11 +284,22 @@ const Page = () => {
 
 
     return (
+
+        <>
+
+
+
+        {/*  CONTENT AREA START   */}
         <div>
 
 
             <div className="text-center bg-slate-900 dark:bg-slate-900 p-6 text-white dark:text-white mb-5">
                 <TextGenerateEffect words={lblHeading}/>
+            </div>
+
+
+            <div className="ms-9">
+            <Button type="button" onClick={printAllStudents}>Print Students</Button>
             </div>
 
 
@@ -444,16 +476,16 @@ const Page = () => {
                 <div className="grid grid-cols-3 gap-4">
 
                     <div>
-                        <Button variant="destructive">Reset</Button>
+                        <Button>Reset</Button>
                     </div>
 
                     <div className="text-center">
-                        <Button variant="warning" onClick={modifyStudent}>Update</Button>
+                        <Button onClick={modifyStudent}>Update</Button>
                     </div>
 
 
                     <div className="text-end">
-                        <Button variant="success" onClick={saveStudent}>Save</Button>
+                        <Button onClick={saveStudent}>Save</Button>
                     </div>
 
 
@@ -469,6 +501,58 @@ const Page = () => {
 
 
         </div>
+        {/*CONTENT ARE END*/}
+
+
+
+            <div className="sr-only">
+                <div ref={contentRef}>
+
+                    <h3 className="text-center text-slate-950 text-2xl mt-5">Student List</h3>
+
+                    <div className="m-10">
+                    <Table>
+                        <TableHeader>
+                                <TableRow>
+                                    <TableHead>#</TableHead>
+                                    <TableHead>First Name</TableHead>
+                                    <TableHead>Last Name</TableHead>
+                                    <TableHead>Date Of Birth</TableHead>
+                                    <TableHead>Gender</TableHead>
+                                    <TableHead>Address</TableHead>
+                                    <TableHead>Mobile</TableHead>
+                                    <TableHead>Status</TableHead>
+                                </TableRow>
+                        </TableHeader>
+
+                        <TableBody>
+                            {studentList.map((student: any, index: number) => (
+                                <TableRow key={index}>
+                                    <TableCell>{index+1}</TableCell>
+                                    <TableCell>{student.firstname}</TableCell>
+                                    <TableCell>{student.lastname}</TableCell>
+                                    <TableCell>{student.dob}</TableCell>
+                                    <TableCell>{student.gender == "1" ? "Male" : "Female"}</TableCell>
+                                    <TableCell>{student.address}</TableCell>
+                                    <TableCell>{student.mobile}</TableCell>
+                                    <TableCell>{student.status == "1" ? "Active" : "Inactive"}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+
+                    </Table>
+                    </div>
+
+
+
+
+
+
+                </div>
+            </div>
+
+
+        </>
     )
 }
 export default Page
