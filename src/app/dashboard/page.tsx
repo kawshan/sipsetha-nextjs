@@ -141,7 +141,7 @@ const Page = () => {
                 </div>
 
                 <div>
-                    <Link href="/dashboard/student">
+                    <Link href="/dashboard/classoffering">
                         <img src="/images/icons/offering.png" alt="offering image"/>
                     </Link>
                     <br/>
